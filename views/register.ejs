@@ -71,6 +71,13 @@
             text-align: center;
             opacity: 0.5;
         }
+        .sign-flow label.error{
+            position: absolute;
+            right: 8px;
+            top: 0;
+            line-height: 43px;
+            color: #c33;
+        }
         .sign-nav{
             position: relative;
             text-align: center;
@@ -329,7 +336,7 @@
                     </div>
                 </div>
                 <div class="sign-lognup" style="display: block">
-                    <form action="/register" method="POST" enctype="multipart/form-data" novalidate="novalidate" >
+                    <form novalidate="novalidate">
                         <div class="group-input">
                             <div class="name input-wrapper">
                                 <input type="text" name="name" placeholder="姓名" required>
@@ -348,7 +355,7 @@
                             </div>
                         </div>
                         <div class="button-wrapper">
-                            <button class="sign-btn" type="submit">注册知乎</button>
+                            <button class="sign-btn" type="button">注册知乎</button>
                         </div>
                     </form>
                     <div class="QRCode">
@@ -540,6 +547,20 @@
                 $('.QRCode-card').off();
             })
         }
+    })
+    $('.sign-lognup button.sign-btn').click(function(){
+        alert('start ajax');
+        $.ajax({
+            type: 'POST',
+            url: '/register',
+            dataType: 'JSON',
+            success: function(data){
+                alert('success');
+            },
+            error: function(data){
+                alert('error');
+            }
+        })
     })
 </script>
 </html>
