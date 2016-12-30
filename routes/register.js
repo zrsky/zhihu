@@ -3,31 +3,39 @@
  */
 var express = require('express');
 var router = express.Router();
-var formidable = require('formidable');
-var form = new formidable.IncomingForm();
+//var formidable = require('formidable');
+//var form = new formidable.IncomingForm();
 var User = require('../model/mongo').User;
 var sha1 = require('sha1');
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    console.log(req.xhr);
-    res.render('register', {
-        phoneNumberExisted: false,
-        passwordLengthWrong: false
-    });
+    res.render('register');
 });
 
 router.post('/', function(req, res, next){
-    console.log(req.xhr);
-    var phoneExisted = false,
-        passwordLenError = false;
+    var name = req.body.name,
+        account = req.body.account,
+        password = req.body.password;
 
-    var strResult = {
-        message: 'success'
-    }
-    res.status(200).json(JSON.stringify({success: 'success'}));
+    User.find({account: account}, function(err, users){
+        if(err){
+            // 内部出错；
+        }
+        if(users.length > 0){
+            return res.status(200).json({accountExist: true});
+        }
+        else if(password.length < 6 || password.length > 22){
+            return res.status(200).json({pwdLenError: true});
+        }
+        else{
+            res.status(200).json({"success": true});
+        }
+    })
 
+    //res.status(200);
+    //
     //form.parse(req, function(err, fields, file){
     //    var name = fields['name'],
     //        account = fields['account'],

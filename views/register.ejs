@@ -344,7 +344,7 @@
                             <div class="email input-wrapper">
                                 <input type="text" name="account" placeholder="手机号（仅支持中国大陆）" required>
                             </div>
-                            <div class="input-wrapper">
+                            <div class="pwd input-wrapper">
                                 <input type="password" name="password" placeholder="密码" required>
                             </div>
                             <div class="input-wrapper captcha-module">
@@ -548,19 +548,56 @@
             })
         }
     })
+
+    $('.sign-lognup .email input').focus(function(){
+        $(this).next().remove();
+    })
+    $('.sign-lognup .pwd input').focus(function(){
+        $(this).next().remove();
+    })
+    // 注册
     $('.sign-lognup button.sign-btn').click(function(){
-        alert('start ajax');
+        var name = $('.sign-lognup').find("input[name='name']").val();
+        var account = $('.sign-lognup').find("input[name='account']").val();
+        var password = $('.sign-lognup').find("input[name='password']").val();
+
+        // 显示手机号已注册
+        function accountExistWarnShow(){
+            $('.sign-lognup .email').append("<label class='error'>该手机号已注册</label>");
+        };
+
+        // 显示手机号已注册
+        function pwdLenErrorShow(){
+            $('.sign-lognup .pwd').append('<label class="error">请输入6-22位的密码</label>');
+        };
+
         $.ajax({
             type: 'POST',
             url: '/register',
+            data: {
+                name: name,
+                account: account,
+                password: password
+            },
             dataType: 'JSON',
             success: function(data){
-                alert('success');
+                if(data.accountExist){
+                    console.log('account');
+                    accountExistWarnShow();
+                }
+                else if(data.pwdLenError){
+                    console.log('password error');
+                    pwdLenErrorShow();
+                }
+                else{
+                    console.log('ok');
+                }
             },
             error: function(data){
-                alert('error');
+                console.log('error');
             }
         })
     })
+
 </script>
 </html>
