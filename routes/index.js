@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../model/mongo').User;
 var sha1 = require('sha1');
+var validatemobile = require('../lib/commFunc').validatemobile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
