@@ -1,7 +1,7 @@
 # 知乎
 ## 技术栈
 * HTML5+CSS3+JS+jquery
-* node.js
+* node.js(express)
 * mongodb
 
 ## 功能（进度）
@@ -12,4 +12,4 @@
 ## 展示
 ### 注册，登录页面
 ![image](https://github.com/jiangchenguang/zhihu/raw/master/show/login-1.png)
-![image](https://github.com/jiangchenguang/zhihu/raw/master/show/login-1.png)
+![image](https://github.com/jiangchenguang/zhihu/raw/master/show/login-2.png)
