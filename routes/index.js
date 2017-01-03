@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 var User = require('../model/mongo').User;
 var sha1 = require('sha1');
+var fs = require('fs');
 var validatemobile = require('../lib/commFunc').validatemobile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.user){
-      res.render('index', { title: 'Express' });
+      res.render('main', {});
   }
   else{
       // 之前没有登录过，返回登录页面
@@ -20,6 +21,17 @@ router.post('/register', function(req, res, next){
     var name = req.body.name,
         account = req.body.account,
         password = req.body.password;
+
+    // 用"user._id"在users下为每个用户创建一个文件夹
+    function mkUserDir(dirname){
+        if(!fs.existsSync("public/images/users/" + dirname)){
+            fs.mkdirSync("public/images/users/" + dirname);
+        }
+        else{
+            // 文件夹已经存在了，一般不太可能
+            console.warn("dir:" + dirname + "is existed!");
+        }
+    };
 
     User.find({account: account}, function(err, users){
         if(err){
@@ -35,14 +47,14 @@ router.post('/register', function(req, res, next){
             return res.status(200).json({pwdLenError: true});
         }
         else{
-            var user = new User({
+            User.create({
                 name: name,
                 account: account,
                 password: sha1(password)    // 密码加密保存
-            });
-            user.save(function(err){
+            }, function(err, user){
                 if(!err){
                     req.session.user = user;
+                    mkUserDir(user._id);
                     return res.status(200).json({"url": "/"});
                 }
             })
@@ -54,6 +66,11 @@ router.post('/register', function(req, res, next){
 router.post('/login', function(req, res, next){
     var account = req.body.account,
         password = req.body.password;
+
+    User.find({account: account}, function(err, users){
+        if(err){
+        }
+    })
 
     User.find({account: account}, function(err, users){
         if(err){

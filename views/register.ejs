@@ -201,6 +201,7 @@
         requestAnimationFrame(ballMove);
         window.captchaLogin = drawPic('captchaLogin');
         window.captchaSignup = drawPic('captchaSignup');
+        console.log(window.captchaLogin);
     }
 
     var animationEnd = (function () {
@@ -334,7 +335,8 @@
                     pwdLenErrorShow();
                 }
                 else{
-                    console.log('ok');
+                    console.log(data.url);
+                    window.location.href = data.url;
                 }
             },
             error: function(data){
