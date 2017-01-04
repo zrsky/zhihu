@@ -1,6 +1,3 @@
-/**
- * Created by morning on 2016/9/2.
- */
 // 支持，反对
 $('.zm-votebar').each(function () {
     // 支持
@@ -197,12 +194,13 @@ $('.toggle-comment').each(function () {
         }
     })
 })
-// 点击添加评论
+
+// 点击添加问题
 $('.zu-top-add-question').click(function () {
     $('.modal-dialog-bg').css('display', 'block');
     $('.modal-wrapper').removeClass('hidden');
 })
-// 关闭评论输入
+// 关闭问题窗口
 $('.modal-dialog-title-close').click(function () {
     $('.modal-wrapper').addClass('hidden');
     $('.modal-dialog-bg').css('display', 'none');

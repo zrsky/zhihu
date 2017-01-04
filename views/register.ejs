@@ -201,7 +201,6 @@
         requestAnimationFrame(ballMove);
         window.captchaLogin = drawPic('captchaLogin');
         window.captchaSignup = drawPic('captchaSignup');
-        console.log(window.captchaLogin);
     }
 
     var animationEnd = (function () {
@@ -372,10 +371,11 @@
             $('.sign-login .captcha-module').append('<label class="error">请提交正确的验证码:(</label>');
         };
 
-        if(captcha != window.captchaLogin){
-            captchaErrorShow();
-            return;
-        }
+//调试时注释
+//        if(captcha != window.captchaLogin){
+//            captchaErrorShow();
+//            return;
+//        }
         $.ajax({
             type: 'POST',
             url: '/login',

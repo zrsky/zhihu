@@ -1494,7 +1494,7 @@
             </div>
             <div class="modal-dialog-content">
                 <div class="zh-add-question-form">
-                    <div class="js-add-question-splash">
+                    <div class="js-add-question-splash" style="display: none;">
                         <p>
                             知乎是一个真诚，友善，认真，互助的社区<br>
                             我们希望每一个疑惑都有解答，好的问题更容易得到好的答案
@@ -1518,8 +1518,28 @@
                         <div class="before-ask-from">
                             <b>提问前请先搜索</b>
                             <div style="margin-top: 18px">
-                                <input type="text" class="zg-from-text-input" placeholder="请输入你的问题">
+                                <input type="text" class="zg-form-text-input" placeholder="请输入你的问题">
                             </div>
+                        </div>
+                    </div>
+                    <div class="js-add-question-form" style="display: block">
+                        <div class="zg-section-big clearFix">
+                            <div class="zg-form-text-input add-question-title-form">
+                                <textarea rows="1"
+                                          class="zg-edit-input"
+                                          title="在这里输入问题"
+                                          id="zh-question-suggest-title-content"
+                                          aria-label="写下你的问题"
+                                          placeholder="写下你的问题"
+                                          style="height: 22px"></textarea>
+                            </div>
+                        </div>
+                        <div class="zg-section-big">
+                            <div class="add-question-section-title">
+                                问题说明（可选）
+                            </div>
+                            <div id="zh-question-suggest-detail-container"
+                                 class="zm-editable-status-editing"></div>
                         </div>
                     </div>
                 </div>

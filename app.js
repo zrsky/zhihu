@@ -27,8 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
   secret: 'morning need do more, think less',
-  resave: true,
-  cookie: {maxAge: 60 * 1000}
+  resave: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 

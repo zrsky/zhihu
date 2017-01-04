@@ -14,6 +14,15 @@ body, form, input, button, p, ul, li{
     border: 0;
     outline: none;
 }
+textarea{
+    border: 0;
+    outline: 0;
+    resize: none;
+    display: inline-block;
+    text-indent: 0px;
+    text-rendering: auto;
+    text-align: start;
+}
 button{
     line-height: 1.7;
 }
@@ -251,7 +260,7 @@ a.zu-top-profile-name:hover{
 .zg-icon, .zu-edit-button-icon, .tr-icon, .zm-profile-header-icon, .icon-external, .icon{
     width: 16px;
     height: 16px;
-    background-image: url("../img/sprites-main-2.png");
+    background-image: url("/images/system/sprites-main-2.png");
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -291,8 +300,13 @@ a.zu-top-profile-name:hover{
 }
 .modal-wrapper{
     z-index: 99;
+    position: fixed;
+    display: -webkit-flex;
     display: flex;
     justify-content: center;
+    -webkit-justify-content: center;
+    align-items: flex-start;
+    -webkit-align-items: flex-start;
     top: 0; left: 0; right: 0; bottom: 0;
 }
 .modal-dialog{
@@ -321,7 +335,7 @@ a.zu-top-profile-name:hover{
     text-shadow: 0 1px 1px rgba(0, 0, 0, .4);
 }
 .modal-dialog-title-close{
-    background: url("../img/sprites-main-2.png");
+    background: url("/images/system/sprites-main-2.png");
     background-repeat: no-repeat;
     position: absolute;
     right: 3px;
@@ -341,10 +355,14 @@ a.zu-top-profile-name:hover{
 .zh-add-question-form p{
     margin-bottom: 18px;
 }
+.zh-add-question-form .add-question-title-form textarea{
+    vertical-align: bottom;
+    min-height: 1em;
+}
 .before-ask-from{
     margin-top: 30px;
 }
-.zg-from-text-input{
+.zg-form-text-input{
     width: 100%;
     box-sizing: border-box;
     border-radius: 2px;
@@ -354,6 +372,23 @@ a.zu-top-profile-name:hover{
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1) inset;
     background: #fff;
     border: 1px solid #ccc;
+}
+.zg-form-text-input>textarea{
+    color: #222;
+    overflow: hidden;
+    line-height: 22px;
+    font-size: 13px;
+    padding: 0!important;
+    margin: 0!important;
+    border: 0!important;
+}
+.zg-edit-input{
+    width: 100%;
+    font-weight: 400;
+    min-height: 66px;
+    padding: 0;
+    margin: 0;
+    border: 0;
 }
 .zg-wrap{
     width: 960px;
@@ -583,7 +618,7 @@ i[class ^= z-icon-], i[class*="z-icon-"]{
     display: inline-block;
     line-height: 10px;
     vertical-align: 0;
-    background-image: url("../img/sprites-main-2.png");
+    background-image: url("/images/system/sprites-main-2.png");
     background-repeat: no-repeat;
     margin-right: 5px;
 }
@@ -686,7 +721,7 @@ i[class ^= z-icon-], i[class*="z-icon-"]{
     position: absolute;
     right: 0; top: 35px;
     width: 20px; height: 20px;
-    background: url("../img/sprites-main-2.png") no-repeat -261px -62px;
+    background: url("/images/system/sprites-main-2.png") no-repeat -261px -62px;
 }
 .expandable .expanded-visible{
     display: none;
