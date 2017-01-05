@@ -265,6 +265,12 @@ a.zu-top-profile-name:hover{
     display: inline-block;
     vertical-align: middle;
 }
+.icon-magnify{
+    width: 12px;
+    height: 12px;
+    background-position: -45px -52px;
+    vertical-align: -1px;
+}
 .zg-noti-number {
     background: #bf1031;
     border: 1px solid #b11331;
@@ -358,6 +364,20 @@ a.zu-top-profile-name:hover{
 .zh-add-question-form .add-question-title-form textarea{
     vertical-align: bottom;
     min-height: 1em;
+}
+.zh-add-question-form .zm-question-form-hide-in-about-question-el{
+    color: #666;
+    margin: 5px 0;
+}
+.zm-add-question-form-topic-wrap .zm-tag-editor-editor{
+    border: 1px solid #ccc!important;
+    padding: 8px 8px 3px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1) inset;
+    position: relative;
+}
+.zg-section-big{
+    margin: 0 0 15px;
 }
 .before-ask-from{
     margin-top: 30px;
@@ -1462,6 +1482,9 @@ a:hover .zg-icon-comment-report{
 }
 .zm-command{
     text-align: right;
+}
+.modal-dialog .zm-command{
+    padding: 20px 0 0;
 }
 .anno-box{
     cursor: pointer;
