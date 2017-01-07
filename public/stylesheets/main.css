@@ -5,14 +5,15 @@ body{
     word-wrap: break-word;
     color: #222;
 }
-input:focus{
-    -webkit-appearance: none;
-}
 body, form, input, button, p, ul, li{
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
+}
+input[type=checkbox]{
+    margin: 0 5px 0 0;
+    vertical-align: 0px;
 }
 textarea{
     border: 0;
@@ -368,6 +369,10 @@ a.zu-top-profile-name:hover{
 .zh-add-question-form .zm-question-form-hide-in-about-question-el{
     color: #666;
     margin: 5px 0;
+}
+.zh-add-question-form .zu-question-suggest-topic-input{
+    border: 0;
+    margin: 0 0 5px 5px;
 }
 .zm-add-question-form-topic-wrap .zm-tag-editor-editor{
     border: 1px solid #ccc!important;

@@ -3,60 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>main</title>
-    <link type="text/css" rel="stylesheet" href="./stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <div class="zu-top">
-        <div class="zg-warp clearfix">
-            <a href="/" class="zu-top-link-logo">知乎</a>
-            <div role="search" id="zh-top_search" class="zu-top-search">
-                <form method="get" action="/search" id="zh-top-search-form" class="zu-top-search-form">
-                    <input type="text" class="zu-top-search-input" placeholder="搜索你感兴趣的内容...">
-                    <button type="submit" class="zu-top-search-button">
-                        <span class="sprite-icon-magnifier-dark"></span>
-                    </button>
-                </form>
-            </div>
-            <div class="zu-top-nav">
-                <ul class="zu-top-nav-ul">
-                    <li class="zu-top-nav-li current">
-                        <a class="zu-top-nav-link" href="/">首页</a>
-                    </li>
-                    <li class="zu-top-nav-li">
-                        <a class="zu-top-nav-link" href="/">话题</a>
-                    </li>
-                    <li class="zu-top-nav-li">
-                        <a class="zu-top-nav-link" href="/">发现</a>
-                    </li>
-                    <li class="zu-top-nav-li">
-                        <a class="zu-top-nav-link" href="/">消息</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="zu-top-profile">
-                <a href="people/morning" class="zu-top-profile-name">
-                    <span class="name">蒋晨光</span>
-                    <img class="avatar" src="img/profile_s.jpg" alt="蒋晨光">
-                    <span class="zu-top-pm-count zg-noti-number">1</span>
-                </a>
-                <ul class="top-nav-dropDown">
-                    <li>
-                        <a href="/people/morning/"><i class="zg-icon zg-icon-home"></i>我的主页</a>
-                    </li>
-                    <li>
-                        <a href="/inbox"><i class="zg-icon zg-icon-pm"></i>私信</a>
-                    </li>
-                    <li>
-                        <a href="/settings"><i class="zg-icon zg-icon-dd-settings"></i>设置</a>
-                    </li>
-                    <li>
-                        <a href="/logout"><i class="zg-icon zg-icon-logout"></i>退出</a>
-                    </li>
-                </ul>
-            </div>
-            <button class="zu-top-add-question">提问</button>
-        </div>
-    </div>
+    <% include components/zu-top.ejs %>
     <div class="zg-wrap zu-main clearFix" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">
@@ -69,7 +19,8 @@
                     </a>
                 </div>
                 <div class="zu-main-feed-con">
-                    <div id="js-home-feed-list" class="zh-general-list clearFix"></div>
+                    <div id="js-home-feed-list" class="zh-general-list clearFix">
+                    </div>
                 </div>
             </div>
         </div>
@@ -252,7 +203,7 @@
                         </div>
                         <div class="zm-command">
                             <label class="zm-question-form-hide-in-about-question-el zg-left">
-                                <input type="checkbox" value="1" class="zg-addq-isanno">匿名
+                                <input type="checkbox">匿名
                             </label>
                             <a href="javascript:;" name="cancel" class="zm-command-cancel">取消</a>
                             <a href="javascript:;" name="addq" class="zu-question-form-add zg-btn-blue">发布</a>

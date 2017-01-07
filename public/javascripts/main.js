@@ -212,6 +212,26 @@ $('input._inputBox_root').focus(function () {
 $('a.zm-comment-cancel').click(function () {
     $('._commentForm-border').removeClass('expanded');
 })
+// 添加问题
+$('.zu-question-form-add').click(function(){
+    var title = $('#zh-question-suggest-title-content').val();
+    console.log(title);
+    $.ajax({
+        type: 'POST',
+        url: '/question/add',
+        data: {
+            title: title
+        },
+        dataType: 'JSON',
+        success: function(data){
+            console.log(data.url);
+            window.location.href = data.url;
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+})
 
 // 输入回答时高亮
 $('#mock').focus(function () {

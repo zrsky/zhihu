@@ -6,6 +6,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var index = require('./routes/index');
+var question = require('./routes/question');
 var users = require('./routes/users');
 
 var app = express();
@@ -32,6 +33,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/question', question);
 app.use('/users', users);
 
 

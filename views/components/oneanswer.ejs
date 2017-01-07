@@ -1,0 +1,66 @@
+<!--
+问题页面 一条答案模版
+anthId: 回答作者id
+content: 回答内容
+data: 回答时间
+upNum: 支持数目
+downNum: 反对数目
+isUP: 支持（T）／反对(F)
+
+-->
+<div class="zm-item-answer zm-item-expanded">
+    <div class="zm-votebar">
+        <button class="up pressed" title="赞同">
+            <i class="icon vote-arrow"></i>
+            <span class="count">78</span>
+        </button>
+        <button class="down" title="反对，不会显示您的姓名">
+            <i class="icon vote-arrow"></i>
+        </button>
+    </div>
+    <div class="answer-head">
+        <div class="zm-item-answer-author-info">
+            <a class="zm-item-link-avatar">
+                <img src="img/people-3_s.jpg" class="Avatar">
+            </a>
+            <span class="summary-wrapper">
+                <span class="author-link-line">
+                    <a class="author-link" href="/people/woshixiaosongshu">Cat Chen</a>
+                    <span class="icon icon-badge-best-answer icon-badge"></span>
+                </span>
+                <span class="badge-summary">
+                    <a href="/people/catchen">程序员等&nbsp;3&nbsp;个话题优秀回答者</a>
+                </span>
+                <span title="Materials Science, PhD" class="bio">上知乎，求欢乐</span>
+            </span>
+        </div>
+        <div class="zm-item-vote-info">
+            <span class="voters text">
+                <a href="#" class="more text">
+                    <span class="js-voteCount">78</span>&nbsp;个赞同
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="zm-item-rich-text expandable">
+        <div class="zh-summary clearFix" style="display: none;"></div>
+        <div class="zm-editable-content clearFix">
+            <%= answer.content %>
+        </div>
+    </div>
+    <div class="zm-item-meta answer-action">
+        <div class="zm-meta-panel">
+            <a class="answer-date-link meta-item"><%= answer.data %></a>
+            <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
+            <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
+            <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
+            <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
+            <span class="zg-bull zu-autoHide">•</span>
+            <a href="#" class="js-noHelp zu-autoHide meta-item">没有帮助</a>
+            <span class="zg-bull zu-autoHide">•</span>
+            <a href="#" class="js-report zu-autoHide meta-item">举报</a>
+            <span class="zg-bull">•</span>
+            <a href="#" class="js-report meta-item">作者保留权利</a>
+        </div>
+    </div>
+</div>
