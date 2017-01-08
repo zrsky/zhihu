@@ -1,20 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var Question = require('../model/mongo').Question;
+var User = require('../model/mongo').User;
 var fs = require('fs');
 
 /* GET home page. */
 router.get('/:id', function(req, res, next) {
     if(req.session.user){
-        console.log(req.params.id);
         Question.findById(req.params.id, function(err, question){
             if(err){
-                // error
+                console.error('findbyid error! questionid[' +  req.params.id + ']');
             }
-            if(typeof question == undefined){
-                // 404
+            if(question == null){
+                // 404 if question is null or undefined.
+                return next();
             }
-            console.log(question);
             return res.render('question', {
                 title: question.title,
                 answerNum: 0
@@ -22,7 +22,7 @@ router.get('/:id', function(req, res, next) {
         })
     }
     else{
-        res.redirect('/');
+        return res.redirect('/');
     }
 });
 
@@ -31,6 +31,14 @@ router.post('/add', function(req, res, next){
     if(!req.session.user) {
         return res.redirect('/');
     }
+    User.findById(req.session.user._id, function(err, user){
+        if(err){
+            console.error('find user id[' +  req.session.user._id + '] error!');
+        }
+        if(user == null){
+            return res.status(200).json({error: "no userid"});
+        }
+    })
 
     var title = req.body.title.trim();
     if(title.length == 0){
@@ -38,7 +46,7 @@ router.post('/add', function(req, res, next){
     }
 
     Question.create({
-        //userObjId: req.session.user._id,
+        userObjId: req.session.user._id,
         title: req.body.title
     }, function(err, question){
         if(!err){

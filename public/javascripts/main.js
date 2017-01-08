@@ -224,8 +224,13 @@ $('.zu-question-form-add').click(function(){
         },
         dataType: 'JSON',
         success: function(data){
-            console.log(data.url);
-            window.location.href = data.url;
+            console.log(data.error);
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                window.location.href = data.url;
+            }
         },
         error: function(data){
             console.log('error');

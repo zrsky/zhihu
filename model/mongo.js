@@ -14,7 +14,7 @@ exports.User = mongoose.model('User', userSchema);
 
 // 问题模型
 var questionSchema = mongoose.Schema({
-    //userObjId: mongoose.Schema.Types.ObjectId,
+    userObjId: mongoose.Schema.Types.ObjectId,
     title: String
 });
 exports.Question = mongoose.model('Question', questionSchema);

@@ -150,7 +150,7 @@ input, button{
     cursor: pointer;
 }
 [class *= sprite-icon-], [class *= sprite-global-]{
-    background-image: url("../img/sprites-main.png");
+    background-image: url("/images/system/sprites-main.png");
     background-repeat: no-repeat;
     display: inline-block;
 }
@@ -855,7 +855,7 @@ i[class ^= z-icon-], i[class*="z-icon-"]{
     color: #698ebf;
 }
 [class*='sprite-comment-icon-']{
-    background-image: url("../img/sprites-main-3.png");
+    background-image: url("/images/system/sprites-main-3.png");
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -958,7 +958,7 @@ button:hover .sprite-comment-icon-open-conversations{
     width: 16px; height: 16px;
 }
 .z-ico-shameimaru-close{
-    background-image: url("../img/sprites-main-4.png");
+    background-image: url("/images/system/sprites-main-4.png");
 }
 .zm-side-section{
     margin-bottom: 15px;
@@ -1046,7 +1046,7 @@ button:hover .sprite-comment-icon-open-conversations{
     margin-bottom: 15px;
 }
 [class *= sprite-sidebar-]{
-    background-image: url("../img/sprites-main-5.png");
+    background-image: url("/images/system/sprites-main-5.png");
     background-repeat: no-repeat;
 }
 .icon-column-log-active{

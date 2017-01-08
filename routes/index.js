@@ -7,13 +7,13 @@ var validatemobile = require('../lib/commFunc').validatemobile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if(req.session.user){
-      res.render('main', {user: req.session.user});
-  }
-  else{
-      // 之前没有登录过，返回登录页面
-      res.render('register');
-  }
+    if(req.session.user){
+        res.render('main', {user: req.session.user});
+    }
+    else{
+        // 之前没有登录过，返回登录页面
+        res.render('register');
+    }
 });
 
 // 处理注册消息
@@ -81,10 +81,7 @@ router.post('/login', function(req, res, next){
         }
         else if(users.length == 1){
             if(sha1(password) == users[0].password){
-                req.session.user = {
-                    account: account,
-                    password: sha1(password)
-                };
+                req.session.user = users[0];
                 return res.status(200).json({"url": "/"});
             }
             else{
