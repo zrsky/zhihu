@@ -1,4 +1,4 @@
-<!--
+<%/*
 问题页面 一条答案模版
 anthId: 回答作者id
 content: 回答内容
@@ -6,8 +6,7 @@ data: 回答时间
 upNum: 支持数目
 downNum: 反对数目
 isUP: 支持（T）／反对(F)
-
--->
+*/%>
 <div class="zm-item-answer zm-item-expanded">
     <div class="zm-votebar">
         <button class="up pressed" title="赞同">
@@ -45,12 +44,12 @@ isUP: 支持（T）／反对(F)
     <div class="zm-item-rich-text expandable">
         <div class="zh-summary clearFix" style="display: none;"></div>
         <div class="zm-editable-content clearFix">
-            <%= answer.content %>
+            <%= content %>
         </div>
     </div>
     <div class="zm-item-meta answer-action">
         <div class="zm-meta-panel">
-            <a class="answer-date-link meta-item"><%= answer.data %></a>
+            <a class="answer-date-link meta-item">今天</a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
             <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>

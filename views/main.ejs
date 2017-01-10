@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <% include components/zu-top.ejs %>
+    <%- include('components/zu-top.ejs', {name: user.name}) %>
     <div class="zg-wrap zu-main clearFix" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">

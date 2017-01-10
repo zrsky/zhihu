@@ -1,8 +1,8 @@
-<!--
-问题页面模版
-title               问题
-answerNum           回答个数
--->
+<%/*
+ 问题页面模版
+ title               问题
+ answerNum           回答个数
+*/%>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,8 +11,8 @@ answerNum           回答个数
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <% include components/zu-top.ejs %>
-    <div class="zg-wrap zu-main clearFix" role="main">
+    <%- include('components/zu-top.ejs', {name: name}) %>
+    <div class="zg-wrap zu-main clearFix" data-url="<%= question_id %>" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">
                 <div id="zh-question-title" class="zm-editable-status-normal">
@@ -62,199 +62,16 @@ answerNum           回答个数
                         <a class="lbl" href="javascript:;">按时间排序</a>
                         <i class="zg-icon zg-icon-double-arrow"></i>
                     </div>
-                    <h3 data-num="187" id="zh-question-answer-num"><%= answerNum %> 个回答</h3>
+                    <h3 data-num="187" id="zh-question-answer-num"><%= answers.length %> 个回答</h3>
                 </div>
                 <div id="zh-question-answer-wrap" class="zh-question-answer-wrapper">
+                    <% answers.forEach(function(answer){ %>
+                        <%- include('components/oneanswer', {content: answer.content}) %>
+                    <% }); %>
                 </div>
-                <a class="zg-btn-white zu-button-more">更多</a>
-                <div id="zh-question-collapsed-link" class="zu-question-collap-title">
-                    <a href="javascript:;" name="collap" class="zh-link-gray" id="zh-question-collapsed-switcher">
-                        <span id="zh-question-collapsed-num">1</span>个答案被折叠
-                    </a>(
-                    <a target="_blank" href="/question/20120168" class="zh-link-gray">为什么？</a> )
-                </div>
-                <div id="zh-question-collapsed-wrap" class="zh-question-answer-wrapper hidden">
-                    <div class="zm-item-answer zm-item-expanded">
-                        <div class="zm-votebar">
-                            <button class="up" title="赞同">
-                                <i class="icon vote-arrow"></i>
-                                <span class="count">2</span>
-                            </button>
-                            <button class="down pressed" title="反对，不会显示您的姓名">
-                                <i class="icon vote-arrow"></i>
-                            </button>
-                        </div>
-                        <div class="answer-head">
-                            <div class="zm-item-answer-author-info">
-                                <a class="zm-item-link-avatar">
-                                    <img src="img/people-3_s.jpg" class="Avatar">
-                                </a>
-                                <span class="summary-wrapper">
-                                    <span class="author-link-line">
-                                        <a class="author-link" href="/people/woshixiaosongshu">九爷</a>
-                                    </span>
-                                    <span title="Materials Science, PhD" class="bio">别做篓子里的螃蟹</span>
-                                </span>
-                            </div>
-                            <div class="zm-item-vote-info">
-                                <span class="voters text">
-                                    <a href="#" class="more text">
-                                        <span class="js-voteCount">2</span>&nbsp;个赞同
-                                    </a>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="zm-item-rich-text expandable">
-                            <div class="zh-summary clearFix" style="display: none;"></div>
-                            <div class="zm-editable-content clearFix">用命令行不一定高贵，但不会用命令行最起码证明这个应聘者只是一个码农，而不是具备主动探索心理的开发者。</div>
-                        </div>
-                        <div class="zm-item-meta answer-action">
-                            <div class="zm-meta-panel">
-                                <a class="answer-date-link meta-item">编辑于 昨天 23:49</a>
-                                <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>4&nbsp;条评论</a>
-                                <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
-                                <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
-                                <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
-                                <span class="zg-bull zu-autoHide">•</span>
-                                <a href="#" class="js-noHelp zu-autoHide meta-item">没有帮助</a>
-                                <span class="zg-bull zu-autoHide">•</span>
-                                <a href="#" class="js-report zu-autoHide meta-item">举报</a>
-                                <span class="zg-bull">•</span>
-                                <a href="#" class="js-report meta-item">作者保留权利</a>
-                            </div>
-                            <div class="comment-app-holder" style="display: none">
-                                <div class="_commentBox-bordered-3Fo">
-                                    <i class="icon icon-spike"></i>
-                                    <div class="_commentBox-list">
-                                        <div class="_commentBox-root-PQNS">
-                                            <a href="https//www.zhihu.com/people/xiaohu-72" class="_commentBox-avatarLink">
-                                                <img class="Avatar Avatar-s" src="img/people-3_s.jpg">
-                                            </a>
-                                            <div class="_commentItem_body">
-                                                <div class="_commentItem-header"><a href="http://www.zhihu.com/people/xiaohu">Gee Law</a></div>
-                                                <div class="_commentItem-content">……为什么要在服务器上写</div>
-                                                <div class="_commentItem-footer">
-                                                    <span class="_commentItem-links hidden"><span>0</span><span>赞</span></span>
-                                                    <time>22 小时前</time>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-reply"></i>
-                                                        <span>回复</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-like"></i>
-                                                        <span>赞</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-report"></i>
-                                                        <span>举报</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="_commentBox-root-PQNS">
-                                            <a href="https//www.zhihu.com/people/izong" class="_commentBox-avatarLink">
-                                                <img class="Avatar Avatar-s" src="img/people-3_s.jpg">
-                                            </a>
-                                            <div class="_commentItem_body">
-                                                <div class="_commentItem-header">
-                                                    <a href="http://www.zhihu.com/people/xiaohu">何钦尧</a>
-                                                    <span><span>（作者） 回复</span><a href="http://www.zhihu.com/people/davidz">Gee Law</a></span>
-                                                    <button class="_commentItem-openConversations _commentBox-textBtn">
-                                                        <i class="sprite-comment-icon-open-conversations"></i>
-                                                        <span>查看对话</span>
-                                                    </button>
-                                                </div>
-                                                <div class="_commentItem-content">比如只有服务器上才有GPU的情况……</div>
-                                                <div class="_commentItem-footer">
-                                                    <span class="_commentItem-links hidden"><span>0</span><span>赞</span></span>
-                                                    <time>21 小时前</time>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-reply"></i>
-                                                        <span>回复</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-like"></i>
-                                                        <span>赞</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-report"></i>
-                                                        <span>举报</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="_commentBox-root-PQNS">
-                                            <a href="https//www.zhihu.com/people/Jury" class="_commentBox-avatarLink">
-                                                <img class="Avatar Avatar-s" src="img/people-3_s.jpg">
-                                            </a>
-                                            <div class="_commentItem_body">
-                                                <div class="_commentItem-header"><a href="http://www.zhihu.com/people/xiaohu">纳泥</a></div>
-                                                <div class="_commentItem-content">你得在服务器上打包，发布</div>
-                                                <div class="_commentItem-footer">
-                                                    <span class="_commentItem-links"><span>1</span><span>赞</span></span>
-                                                    <time>21 小时前</time>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-reply"></i>
-                                                        <span>回复</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-like"></i>
-                                                        <span>赞</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-report"></i>
-                                                        <span>举报</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="_commentBox-root-PQNS">
-                                            <a href="https//www.zhihu.com/people/zhangyixuan" class="_commentBox-avatarLink">
-                                                <img class="Avatar Avatar-s" src="img/people-3_s.jpg">
-                                            </a>
-                                            <div class="_commentItem_body">
-                                                <div class="_commentItem-header"><a href="http://www.zhihu.com/people/xiaohu">西利西利</a></div>
-                                                <div class="_commentItem-content">很实用。尤其是看diff，图形界面比命令行方便得不止一点点</div>
-                                                <div class="_commentItem-footer">
-                                                    <span class="_commentItem-links hidden"><span>0</span><span>赞</span></span>
-                                                    <time>21 小时前</time>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-reply"></i>
-                                                        <span>回复</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-like"></i>
-                                                        <span>赞</span>
-                                                    </button>
-                                                    <button class="_commentItem-action _commentBox-textBtn">
-                                                        <i class="zg-icon zg-icon-comment-report"></i>
-                                                        <span>举报</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="_commentBox-pageBorder _pager_root hidden">
-                                        <span class="_pager-item _pager-muted">上一页</span>
-                                        <span class="_pager-item _pager-muted">1</span>
-                                        <a class="_pager-item">2</a>
-                                        <a class="_pager-item">3</a>
-                                        <a class="_pager-item">4</a>
-                                        <a class="_pager-item">5</a>
-                                        <a class="_pager-item">下一页</a>
-                                    </div>
-                                    <div class="_commentForm-border">
-                                        <input type="text" class="_inputBox_root" placeholder="写下你的评论...">
-                                        <div class="zm-comment zg-clear">
-                                            <a href="javascript:;" class="zg-right zg-btn-blue">评论</a>
-                                            <a href="javascript:;" class="zm-comment-cancel">关闭</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <% if(more){ %>
+                    <a class="zg-btn-white zu-button-more">更多</a>
+                <% } %>
                 <div id="zh-question-answer-form-wrap" class="zh-question-answer-form-wrap">
                     <div class="zm-editable-editor-wrap">
                         <div class="zm-answer-form">
@@ -363,8 +180,7 @@ answerNum           回答个数
                                 </div>
                             </div>
                             <div class="zm-editable-editor-field-wrap">
-                                <div id="mock" class="zm-editable-editor-field-element editable" contenteditable="true">
-                                </div>
+                                <div id="mock" class="zm-editable-editor-field-element editable" contenteditable="true"></div>
                             </div>
                         </div>
                         <div class="zm-command">

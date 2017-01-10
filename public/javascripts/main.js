@@ -212,13 +212,15 @@ $('input._inputBox_root').focus(function () {
 $('a.zm-comment-cancel').click(function () {
     $('._commentForm-border').removeClass('expanded');
 })
-// 添加问题
+
+// 问题页面添加问题
 $('.zu-question-form-add').click(function(){
     var title = $('#zh-question-suggest-title-content').val();
     console.log(title);
+    return;
     $.ajax({
         type: 'POST',
-        url: '/question/add',
+        url: '/question/addq',
         data: {
             title: title
         },
@@ -230,6 +232,32 @@ $('.zu-question-form-add').click(function(){
             }
             else{
                 window.location.href = data.url;
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+})
+
+// 问题页面添加回答
+$('#zh-question-answer-form-wrap .submit-button').click(function(){
+    var answer = $('#zh-question-answer-form-wrap #mock').text();
+    var question_id = $('.zg-wrap.zu-main').attr('data-url');
+    $.ajax({
+        type: 'POST',
+        url: '/question/adda/' + question_id,
+        data: {
+            answer: answer
+        },
+        dataType: 'JSON',
+        success: function(data){
+            console.log(data.error);
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+
             }
         },
         error: function(data){
