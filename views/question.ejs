@@ -11,7 +11,7 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <%- include('components/zu-top.ejs', {name: name}) %>
+    <%- include('components/zu-top.ejs', {name: user.name, profileUrl: user.profileUrl}) %>
     <div class="zg-wrap zu-main clearFix" data-url="<%= question_id %>" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">
@@ -66,7 +66,13 @@
                 </div>
                 <div id="zh-question-answer-wrap" class="zh-question-answer-wrapper">
                     <% answers.forEach(function(answer){ %>
-                        <%- include('components/oneanswer', {content: answer.content}) %>
+                        <%- include('components/oneanswer', {
+                                content: answer.content,
+                                upNum: answer.upNum,
+                                goodAnswer: answer.user.goodAnser,
+                                bio: answer.user.bio,
+                                name: answer.user.name,
+                                profileUrl: answer.user.profileUrl}) %>
                     <% }); %>
                 </div>
                 <% if(more){ %>
@@ -75,10 +81,10 @@
                 <div id="zh-question-answer-form-wrap" class="zh-question-answer-form-wrap">
                     <div class="zm-editable-editor-wrap">
                         <div class="zm-answer-form">
-                            <a href="/people/jiang-chen-guang" class="zm-item-link-avatar"><img src="img/profile_s.jpg"></a>
+                            <a href="/people/jiang-chen-guang" class="zm-item-link-avatar"><img style="width: 100%; height: 100%" src=<%= user.profileUrl%>></a>
                             <div>
                                 <div class="zu-answer-form-title">
-                                    <a href="/people/jiang-chen-guang">蒋晨光</a>
+                                    <a href="/people/jiang-chen-guang"><%= user.name %></a>
                                     <span>
                                         <a name="edit-bio" class="zu-edit-button" href="#">
                                             <i class="zu-edit-button-icon"></i>填写话题经验，提升回答可信度
@@ -347,6 +353,7 @@
         </div>
     </div>
     <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/ejs_production.js"></script>
     <script type="text/javascript" src="/javascripts/main.js"></script>
     <div></div>
 </body>

@@ -216,8 +216,6 @@ $('a.zm-comment-cancel').click(function () {
 // 问题页面添加问题
 $('.zu-question-form-add').click(function(){
     var title = $('#zh-question-suggest-title-content').val();
-    console.log(title);
-    return;
     $.ajax({
         type: 'POST',
         url: '/question/addq',
@@ -257,7 +255,8 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
                 console.log(data.error);
             }
             else{
-
+                var html = new EJS({url: '/views/oneanswer'}).render({content: answer});
+                $('#zh-question-answer-wrap').append(html);
             }
         },
         error: function(data){

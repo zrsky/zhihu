@@ -29,9 +29,24 @@ router.get('/:id', function(req, res, next) {
                                 reject('');
                             }
                             else{
-                                resolve({
-                                    content: answer.answer
-                                });
+                                User.findById(answer.userObjId, function(err, user){
+                                    if(err){
+                                        reject('');
+                                    }
+                                    else{
+                                        resolve({
+                                            content: answer.answer,
+                                            upNum: answer.upNum,
+                                            user: {
+                                                _id: user._id,
+                                                name: user.name,
+                                                bio: user.bio || '晨光要努力！',
+                                                goodAnswer: false,
+                                                profileUrl: user.profileUrl || '/images/system/profile_s.jpg'
+                                            }
+                                        });
+                                    }
+                                })
                             }
                         })
                     })
@@ -41,9 +56,11 @@ router.get('/:id', function(req, res, next) {
             }
 
             Promise.all(getAnswers(question.answers)).then(function(datas){
-                console.log(datas);
                 return res.render('question', {
-                    name: req.session.user.name,
+                    user: {
+                        name: req.session.user.name,
+                        profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
+                    },
                     question_id: req.params.id,
                     title: question.title,
                     answers: datas,
@@ -115,23 +132,6 @@ router.post('/adda/:question_id', function(req, res, next){
         answer: answer
     }, function(err, answer){
         if(!err){
-            //Question.findById(req.params.question_id, function(err, question){
-            //    if(err){
-            //        console.error('find question error!');
-            //    }
-            //    else{
-            //        if(question == null){
-            //            // 找不到question，可能被删除了。
-            //            return res.status(200).json({error: "no such question"});
-            //        }
-            //        // 放入答案的_id
-            //        console.log('question_id:' + question._id);
-            //        question.answers.push(answer._id);
-            //        question.save(function(err){
-            //            console.log('save question error');
-            //        });
-            //    }
-            //})
             Question.findByIdAndUpdate(req.params.question_id, {$push: {answers: answer._id}}, function(err, question){
                 if(err){
                     console.log('add answer_id to question error');

@@ -108,7 +108,7 @@ input, button{
 }
 .zu-top-link-logo{
     float: left;
-    background: url("../img/logo-main.png") 0 8px no-repeat;
+    background: url("/images/system/logo-main.png") 0 8px no-repeat;
     width: 61px; height: 100%;
     text-indent: -9999px;
     color: white;
