@@ -195,6 +195,22 @@ $('.toggle-comment').each(function () {
     })
 })
 
+// 退出登录
+$('ul.top-nav-dropDown').children().eq(3).click(function(){
+    $.ajax({
+        type: 'POST',
+        url: '/logout',
+        dataType: 'JSON',
+        success: function(data){
+            console.log('log out success');
+            window.location.href = data.url;
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+});
+
 // 点击添加问题
 $('.zu-top-add-question').click(function () {
     $('.modal-dialog-bg').css('display', 'block');
@@ -257,6 +273,7 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
             else{
                 var html = new EJS({url: '/views/oneanswer'}).render({content: answer});
                 $('#zh-question-answer-wrap').append(html);
+                // TODO:隐藏答题框体
             }
         },
         error: function(data){

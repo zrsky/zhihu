@@ -1,17 +1,19 @@
 <%/*
 问题页面 一条答案模版
-name:    昵称
-anthId: 回答作者id
-content: 回答内容
-profileUrl: 头像路径
-data: 回答时间
-upNum: 支持数目
-downNum: 反对数目
-isUP: 支持（T）／反对(F)
+name            昵称
+anthId          回答作者id
+content         回答内容
+profileUrl      头像路径
+date            回答时间
+upNum           支持数目
 */%>
 <div class="zm-item-answer zm-item-expanded">
     <div class="zm-votebar">
-        <button class="up pressed" title="赞同">
+        <% if(0){ %>
+            <button class="up pressed" title="赞同">
+        <% }else{ %>
+            <button class="up" title="赞同">
+        <% } %>
             <i class="icon vote-arrow"></i>
             <span class="count"><%= upNum %></span>
         </button>
@@ -39,7 +41,7 @@ isUP: 支持（T）／反对(F)
         <div class="zm-item-vote-info">
             <span class="voters text">
                 <a href="#" class="more text">
-                    <span class="js-voteCount">78</span>&nbsp;个赞同
+                    <span class="js-voteCount"><%= upNum %></span>&nbsp;个赞同
                 </a>
             </span>
         </div>
@@ -52,7 +54,7 @@ isUP: 支持（T）／反对(F)
     </div>
     <div class="zm-item-meta answer-action">
         <div class="zm-meta-panel">
-            <a class="answer-date-link meta-item">今天</a>
+            <a class="answer-date-link meta-item"><%= date %></a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
             <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>

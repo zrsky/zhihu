@@ -7,6 +7,8 @@ var fs = require('fs');
 
 /* GET home page. */
 router.get('/:id', function(req, res, next) {
+    var answered = false;
+
     if(req.session.user){
         Question.findById(req.params.id, function(err, question){
             if(err){
@@ -16,9 +18,7 @@ router.get('/:id', function(req, res, next) {
                 // 404 if question is null or undefined.
                 return next();
             }
-            var answers = [];
-            var lstArr = []
-
+            // 获取问题所有答案详细
             function getAnswers(answers){
                 var promises = [];
 
@@ -34,9 +34,13 @@ router.get('/:id', function(req, res, next) {
                                         reject('');
                                     }
                                     else{
+                                        if(!answered && answer.userObjId == req.session.user._id){
+                                            answered = true;
+                                        }
                                         resolve({
                                             content: answer.answer,
                                             upNum: answer.upNum,
+                                            date: answer.date.toLocaleString(),
                                             user: {
                                                 _id: user._id,
                                                 name: user.name,
@@ -55,12 +59,13 @@ router.get('/:id', function(req, res, next) {
                 return promises;
             }
 
-            Promise.all(getAnswers(question.answers)).then(function(datas){
+            Promise.all(getAnswers(question.lstAnswer)).then(function(datas){
                 return res.render('question', {
                     user: {
                         name: req.session.user.name,
                         profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
                     },
+                    answered: answered,
                     question_id: req.params.id,
                     title: question.title,
                     answers: datas,
@@ -99,9 +104,17 @@ router.post('/addq', function(req, res, next){
         title: title
     }, function(err, question){
         if(!err){
-            console.log('save question success');
-
-            return res.status(200).json({"url": "/question/" + question._id});
+            User.findByIdAndUpdate(req.session.user._id, {$push: {lstQuestion: question._id}}, function(err, User){
+                if(!err){
+                    return res.status(200).json({"url": "/question/" + question._id});
+                }
+                else{
+                    console.error('add question.id to list failed');
+                }
+            })
+        }
+        else{
+            console.error('save question error');
         }
     })
 
@@ -132,13 +145,19 @@ router.post('/adda/:question_id', function(req, res, next){
         answer: answer
     }, function(err, answer){
         if(!err){
-            Question.findByIdAndUpdate(req.params.question_id, {$push: {answers: answer._id}}, function(err, question){
+            Question.findByIdAndUpdate(req.params.question_id, {$push: {lstAnswer: answer._id}}, function(err, question){
                 if(err){
                     console.log('add answer_id to question error');
                 }
                 else{
-                    console.log(question);
-                    return res.status(200).json({"success": "success"});
+                    User.findByIdAndUpdate(req.session.user._id, {$push: {lstAnswer: answer._id}}, function(err, user){
+                        if(!err){
+                            return res.status(200).json({"success": "success"});
+                        }
+                        else{
+                            console.error('add answer_id to userlist failed');
+                        }
+                    })
                 }
             })
         }

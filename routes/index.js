@@ -72,11 +72,6 @@ router.post('/login', function(req, res, next){
 
     User.find({account: account}, function(err, users){
         if(err){
-        }
-    })
-
-    User.find({account: account}, function(err, users){
-        if(err){
             // 内部出错；
         }
         if(users.length == 0){
@@ -92,6 +87,12 @@ router.post('/login', function(req, res, next){
             }
         }
     })
+})
+
+// 处理登出消息
+router.post('/logout', function(req, res, next){
+    req.session.user = null;
+    return res.status(200).json({"url": "/"});
 })
 
 module.exports = router;
