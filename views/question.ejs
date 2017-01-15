@@ -17,13 +17,11 @@
             <div class="zu-main-content-inner">
                 <div id="zh-question-title" class="zm-editable-status-normal">
                     <h2 class="zm-item-title">
-                        <span>
-                            <%= title %>
-                            <a class="zu-edit-button" href="javascript:;" name="edit">
-                                <i class="zu-edit-button-icon"></i>
-                                修改
-                            </a>
-                        </span>
+                        <%= title %>
+                        <a class="zu-edit-button" href="javascript:;" name="edit">
+                            <i class="zu-edit-button-icon"></i>
+                            修改
+                        </a>
                     </h2>
                 </div>
                 <div id="zh-question-detail">
@@ -67,12 +65,14 @@
                 <div id="zh-question-answer-wrap" class="zh-question-answer-wrapper">
                     <% answers.forEach(function(answer){ %>
                         <%- include('components/oneanswer', {
+                                answerUrl: '/question/'+ question_id + '/answer/' + answer.answer_id,
                                 content: answer.content,
                                 upNum: answer.upNum,
                                 date: answer.date,
                                 goodAnswer: answer.user.goodAnser,
                                 bio: answer.user.bio,
                                 name: answer.user.name,
+                                answerOwner: answer.user.answerOwner,
                                 profileUrl: answer.user.profileUrl}) %>
                     <% }); %>
                 </div>
@@ -80,7 +80,7 @@
                     <a class="zg-btn-white zu-button-more">更多</a>
                 <% } %>
                 <% if(!answered){ %>
-                    <%- include('components/question-answer-form.ejs', {name: user.name, profileUrl: user.profileUrl })%>
+                    <%- include('components/answer-edit-wrap-add.ejs', {name: user.name, profileUrl: user.profileUrl })%>
                 <% } %>
             </div>
         </div>

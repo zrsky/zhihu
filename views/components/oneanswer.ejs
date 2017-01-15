@@ -1,18 +1,25 @@
 <%/*
 问题页面 一条答案模版
+answerUrl       答案路径
 name            昵称
 anthId          回答作者id
 content         回答内容
 profileUrl      头像路径
 date            回答时间
 upNum           支持数目
+answerOwner     我的答案
 */%>
+<% if(!answerOwner){ %>
 <div class="zm-item-answer zm-item-expanded">
+<% } else {%>
+<div class="zm-item-answer zm-item-expanded zm-item-answer-owner">
+<% } %>
+    <link itemprop="url" href="<%= answerUrl %>">
     <div class="zm-votebar">
         <% if(0){ %>
-            <button class="up pressed" title="赞同">
+        <button class="up pressed" title="赞同">
         <% }else{ %>
-            <button class="up" title="赞同">
+        <button class="up" title="赞同">
         <% } %>
             <i class="icon vote-arrow"></i>
             <span class="count"><%= upNum %></span>
@@ -50,7 +57,16 @@ upNum           支持数目
         <div class="zh-summary clearFix" style="display: none;"></div>
         <div class="zm-editable-content clearFix">
             <%= content %>
+            <% if(answerOwner){ %>
+            <a href="javascript:;" class="zu-edit-button" name="edit">
+                <i class="zu-edit-button-icon"></i>
+                <span>修改</span>
+            </a>
+            <% } %>
         </div>
+        <% if(answerOwner){ %>
+            <%- include('answer-edit-wrap-owner', { content: content }) %>
+        <% }%>
     </div>
     <div class="zm-item-meta answer-action">
         <div class="zm-meta-panel">

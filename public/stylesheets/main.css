@@ -1421,16 +1421,16 @@ a:hover .zg-icon-comment-report{
 .tr-underline{
     background-position: -32px -127px;
 }
-.tr-quote{
+.tr-quote, .tr-blockquote{
     background-position: -112px -127px;
 }
 .tr-code{
     background-position: -128px -127px;
 }
-.tr-orderedList{
+.tr-orderedList, .tr-insertOrderedList{
     background-position: -144px -127px;
 }
-.tr-unorderedList{
+.tr-unorderedList, .tr-insertUnorderedList{
     background-position: -160px -127px;
 }
 .tr-equation{
@@ -1442,7 +1442,7 @@ a:hover .zg-icon-comment-report{
 .tr-video{
     background-position: -96px -127px;
 }
-.tr-clearFormat{
+.tr-clearFormat, .tr-removeFormat{
     background-position: -176px -127px;
 }
 .goog-toolbar-button-outer-box:hover .goog-toolbar-button-inner-box{
@@ -1467,6 +1467,12 @@ a:hover .zg-icon-comment-report{
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, .1) inset;
     background: #fff;
 }
+.editable-dropzone{
+    display: none;
+    position: absolute;
+    top: 8px;
+    background-color: rgba(255, 255, 255, .5);
+}
 .zm-editable-editor-field-active{
     border: 1px solid #aaa;
 }
@@ -1486,6 +1492,7 @@ a:hover .zg-icon-comment-report{
     padding: 10px 0 0;
 }
 .zm-command{
+    padding: 10px 0;
     text-align: right;
 }
 .modal-dialog .zm-command{

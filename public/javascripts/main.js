@@ -234,7 +234,7 @@ $('.zu-question-form-add').click(function(){
     var title = $('#zh-question-suggest-title-content').val();
     $.ajax({
         type: 'POST',
-        url: '/question/addq',
+        url: '/question/',
         data: {
             title: title
         },
@@ -260,7 +260,7 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
     var question_id = $('.zg-wrap.zu-main').attr('data-url');
     $.ajax({
         type: 'POST',
-        url: '/question/adda/' + question_id,
+        url: '/' + question_id + '/answer/',
         data: {
             answer: answer
         },
@@ -280,6 +280,51 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
             console.log('error');
         }
     })
+})
+
+// 问题页面【点击】编辑我的回答
+//(function editOwnerAnswer(){
+//    $(".zm-item-answer-owner .zm-item-rich-text a[name='edit']").click(function(){
+//        console.log('click edit');
+//        $(this).parent().css('display', 'none');
+//        $(this).parent().next().css('display', 'block');
+//    })
+//})();
+
+// 问题页面【发布】我的回答
+$(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").click(function(){
+    var answer = $('.zm-editable-editor-wrap #mock').text();
+    var url = $(this).parent().parent().parent().parent().children('link').attr('href');
+    var $answer = $(this).parent().parent().prev();
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            answer: answer
+        },
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                console.log('update answer success!');
+                // TODO:不能再次编辑？
+                $answer.html(answer + '<a href="javascript:;" class="zu-edit-button" name="edit"><i class="zu-edit-button-icon"></i><span>修改</span></a>');
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+
+    $(this).parent().parent().css('display', 'none');
+    $(this).parent().parent().prev().css('display', 'block');
+})
+// 问题页面【取消】编辑我的回答
+$(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='cancel']").click(function(){
+    $(this).parent().parent().css('display', 'none');
+    $(this).parent().parent().prev().css('display', 'block');
 })
 
 // 输入回答时高亮

@@ -1,0 +1,128 @@
+<%/*
+问题页面中修改我的回答后显示的答案编辑模版
+*/%>
+<div class="zm-editable-editor-wrap" style="display: none;">
+    <div class="zm-editable-editor-outer">
+        <div class="zm-editable-toolbar-container goog-scrollfloater">
+            <div class="goog-toolbar goog-toolbar-horizontal" role="toolbar" tabindex="-1">
+                <div class="goog-inline-block goog-toolbar-button" title="写作模式" role="button" id="toggleFullScreen">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-max"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="粗体 (⌘+b)" role="button" aria-pressed="false" id="+bold">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-bold"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="斜体 (⌘+i)" role="button" aria-pressed="false" id="+italic">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-italic"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="下划线 (⌘+u)" role="button" aria-pressed="false" id="+underline">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-underline"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-toolbar-separator goog-toolbar-separator-disabled goog-inline-block" aria-disabled="true" role="separator" id=":1b">&nbsp;</div>
+                <div class="goog-inline-block goog-toolbar-button" title="引用内容" role="button" aria-pressed="false" id="+blockquote">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-blockquote"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="插入代码" role="button" aria-pressed="false" id="+code">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-code"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="有序列表" role="button" aria-pressed="false" id="+insertOrderedList">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-insertOrderedList"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="无序列表" role="button" aria-pressed="false" id="+insertUnorderedList">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-insertUnorderedList"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="插入公式" role="button" id="+equation">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-equation"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-toolbar-separator goog-toolbar-separator-disabled goog-inline-block" aria-disabled="true" role="separator" id=":1c">&nbsp;</div>
+                <div class="goog-inline-block goog-toolbar-button" title="插入图片" role="button" id="image">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-image"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-inline-block goog-toolbar-button" title="插入视频" role="button" id="video">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-video"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="goog-toolbar-separator goog-toolbar-separator-disabled goog-inline-block" aria-disabled="true" role="separator" id=":1d">&nbsp;</div>
+                <div class="goog-inline-block goog-toolbar-button" title="清除格式" role="button" id="+removeFormat">
+                    <div class="goog-inline-block goog-toolbar-button-outer-box">
+                        <div class="goog-inline-block goog-toolbar-button-inner-box">
+                            <div class="tr-icon tr-removeFormat"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tr-spinner spinner-gray" style="display: none;"></div>
+            </div>
+        </div>
+        <div class="zm-editable-editor-field-wrap">
+            <div id="mock" class="zm-editable-editor-field-element editable" g_editable="true" role="textbox" contenteditable="true"><%= content %></div>
+            <div class="editable-dropzone">
+                <div class="row">
+                    <div class="cell">
+                        <div>拖拽至此处上传</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mention-popup" style="display: none;">
+            <div class="writing-bg">
+                <input role="combobox" aria-autocomplete="list" autocomplete="off">
+            </div>
+            <div class="tip">想用 @ 提到谁？</div>
+        </div>
+    </div>
+    <div class="zm-command">
+        <div class="draft-controls zg-left">
+            <span class="draft-saved-info" style="display: none;">
+                <a class="draft-clear-button goog-inline-block" href="#" data-tooltip="s$b$取消编辑并删除草稿">
+                    <i class="zg-icon zg-icon-bin"></i>
+                    <span class="hide-text">清除草稿</span>
+                </a>
+                <span class="draft-saved-time"></span>
+            </span>
+        </div>
+        <a class="zm-command-cancel" name="cancel" href="#">取消</a>
+        <a class="zg-r3px zg-btn-blue" name="save" href="#">发布</a>
+    </div>
+</div>
