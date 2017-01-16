@@ -84,7 +84,7 @@
                 <% } %>
             </div>
         </div>
-        <%- include components/question-sidebar %>
+        <%- include('components/question-sidebar', {viewNum: viewNum}) %>
     </div>
     <div id="zh-footer" class="zh-footer">
         <div class="content zg-warp">
@@ -100,9 +100,8 @@
             <span class="copy">© 2016 知乎</span>
         </div>
     </div>
-    <div class="modal-dialog-bg" style="opacity: 0.5; width: 100%; height: 100%; display: none"></div>
-    <%- include components/take-question %>
-    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <%- include components/addQuestion %>
+    <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="/javascripts/ejs_production.js"></script>
     <script type="text/javascript" src="/javascripts/main.js"></script>
     <div></div>

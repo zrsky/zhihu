@@ -283,14 +283,13 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
 })
 
 // 问题页面【点击】编辑我的回答
-//(function editOwnerAnswer(){
-//    $(".zm-item-answer-owner .zm-item-rich-text a[name='edit']").click(function(){
-//        console.log('click edit');
-//        $(this).parent().css('display', 'none');
-//        $(this).parent().next().css('display', 'block');
-//    })
-//})();
-
+function editOwnerAnswer(){
+    $(".zm-item-answer-owner .zm-item-rich-text a[name='edit']").click(function(){
+        $(this).parent().css('display', 'none');
+        $(this).parent().next().css('display', 'block');
+    })
+};
+editOwnerAnswer();
 // 问题页面【发布】我的回答
 $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").click(function(){
     var answer = $('.zm-editable-editor-wrap #mock').text();
@@ -308,9 +307,8 @@ $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").
                 console.log(data.error);
             }
             else{
-                console.log('update answer success!');
-                // TODO:不能再次编辑？
                 $answer.html(answer + '<a href="javascript:;" class="zu-edit-button" name="edit"><i class="zu-edit-button-icon"></i><span>修改</span></a>');
+                editOwnerAnswer();
             }
         },
         error: function(data){
@@ -321,6 +319,52 @@ $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").
     $(this).parent().parent().css('display', 'none');
     $(this).parent().parent().prev().css('display', 'block');
 })
+
+// 关注问题
+$('button.zg-follow').click(function(){
+    var question_id = $('.zg-wrap.zu-main').attr('data-url');
+
+    $.ajax({
+        type: 'POST',
+        url: '/question/' + question_id + '/follow/',
+        dataType: 'JSON',
+        success: function(data){
+            console.log(data.error);
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                $(this).removeClass('zg-follow zg-btn-blue').addClass('zg-unfollow zg-btn-white').text('取消关注');
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+})
+// 取消关注问题
+$('button.zg-unfollow').click(function(){
+    var question_id = $('.zg-wrap.zu-main').attr('data-url');
+
+    $.ajax({
+        type: 'POST',
+        url: '/question/' + question_id + '/unfollow/',
+        dataType: 'JSON',
+        success: function(data){
+            console.log(data.error);
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                $(this).removeClass('zg-unfollow zg-btn-white').addClass('zg-follow zg-btn-blue').text('关注问题');
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+})
+
 // 问题页面【取消】编辑我的回答
 $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='cancel']").click(function(){
     $(this).parent().parent().css('display', 'none');

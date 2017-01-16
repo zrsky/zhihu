@@ -28,13 +28,16 @@ exports.User = mongoose.model('User', userSchema);
  * date             创建时间
  * title            问题
  * lstAnswer        问题所有答案"_id"列表
+ * lstFollower      关注着"_id"列表
  * viewNum          被浏览次数
  * */
 var questionSchema = mongoose.Schema({
     userObjId: mongoose.Schema.Types.ObjectId,
     date: { type: Date, default: Date.now },
     title: String,
-    lstAnswer: [String]
+    lstAnswer: [String],
+    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    viewNum: {type: Number, default: 0}
 });
 exports.Question = mongoose.model('Question', questionSchema);
 

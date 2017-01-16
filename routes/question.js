@@ -13,12 +13,12 @@ var Answer = require('../model/mongo').Answer;
 var User = require('../model/mongo').User;
 var fs = require('fs');
 
-/* GET home page. */
+// 获取问题页面
 router.get('/:id', function(req, res, next) {
     var answered = false;
 
     if(req.session.user){
-        Question.findById(req.params.id, function(err, question){
+        Question.findByIdAndUpdate(req.params.id, {$inc: {viewNum: 1}}, function(err, question){
             if(err){
                 console.error('findbyid error! questionid[' +  req.params.id + ']');
             }
@@ -68,8 +68,13 @@ router.get('/:id', function(req, res, next) {
                 }
                 return promises;
             }
+            console.log('id' + req.params._id);
+            Question.findOne({_id: req.params._id}).populate('lstFollower').exec(function(err, tmp){
+                console.log('populate:' + tmp);
+            });
 
             Promise.all(getAnswers(question.lstAnswer)).then(function(datas){
+
                 return res.render('question', {
                     user: {
                         name: req.session.user.name,
@@ -78,11 +83,51 @@ router.get('/:id', function(req, res, next) {
                     answered: answered,
                     question_id: req.params.id,
                     title: question.title,
+                    viewNum: question.viewNum,
                     answers: datas,
                     more: false,
                     answerNum: 0
                 });
             })
+        })
+    }
+    else{
+        return res.redirect('/');
+    }
+});
+
+// 关注问题
+router.post('/:question_id/follow', function(req, res, next) {
+    var answered = false;
+    console.log('enter follow');
+    if(req.session.user){
+        Question.findByIdAndUpdate(req.params.question_id, {$push:{lstFollower: req.session.user._id}}, function(err, question){
+            if(err){
+                console.log('follow error!');
+                return res.status(200).json({error: true});
+            }
+            else{
+                return res.status(200).json({success: true});
+            }
+        })
+    }
+    else{
+        return res.redirect('/');
+    }
+});
+// 取消关注问题
+router.post('/:question_id/unfollow', function(req, res, next) {
+    var answered = false;
+    console.log('enter follow');
+    if(req.session.user){
+        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstFollower: req.session.user._id}}, function(err, question){
+            if(err){
+                console.log('follow error!');
+                return res.status(200).json({error: true});
+            }
+            else{
+                return res.status(200).json({success: true});
+            }
         })
     }
     else{

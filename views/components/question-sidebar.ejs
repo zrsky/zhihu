@@ -1,5 +1,7 @@
 <%/*
  问题页面边栏模板
+ viewNum            浏览次数
+ followNum          关注人数
  */%>
 <div class="zu-main-sidebar">
     <div class="zm-side-section">
@@ -7,7 +9,7 @@
             <button class="follow-button zg-follow zg-btn-blue">关注问题</button>
             <div class="zh-question-followers-sidebar">
                 <div class="zg-gray-normal">
-                    <a href="/question/0001/followers"><strong>762</strong></a>
+                    <a href="/question/0001/followers"><strong>0</strong></a>
                     人关注该话题
                 </div>
                 <div class="list zu-small-avatar-list zg-clear">
@@ -80,10 +82,8 @@
             </div>
             <div class="zg-gray-normal">
                 被浏览
-                <strong>59986</strong>
-                次，相关话题关注者
-                <strong>398902</strong>
-                人
+                <strong><%= viewNum %></strong>
+                次
             </div>
         </div>
     </div>
