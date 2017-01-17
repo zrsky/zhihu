@@ -14,7 +14,7 @@ var userSchema = mongoose.Schema({
     name: {type: String, unique: true},
     date: { type: Date, default: Date.now },
     bio: String,
-    profileUrl: String,
+    profileUrl: {type: String, default: '/images/system/profile_l.jpg'},
     account: {type: String, unique: true},
     password: String,
     lstQuestion: [String],

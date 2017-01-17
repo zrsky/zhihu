@@ -68,26 +68,34 @@ router.get('/:id', function(req, res, next) {
                 }
                 return promises;
             }
-            console.log('id' + req.params._id);
-            Question.findOne({_id: req.params._id}).populate('lstFollower').exec(function(err, tmp){
-                console.log('populate:' + tmp);
-            });
 
             Promise.all(getAnswers(question.lstAnswer)).then(function(datas){
-
-                return res.render('question', {
-                    user: {
-                        name: req.session.user.name,
-                        profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
-                    },
-                    answered: answered,
-                    question_id: req.params.id,
-                    title: question.title,
-                    viewNum: question.viewNum,
-                    answers: datas,
-                    more: false,
-                    answerNum: 0
+                Question.findOne({_id: req.params.id}).populate('lstFollower').exec(function(err, all){
+                    var followed = false;
+                    for(var loop = 0; loop < all.lstFollower.length; loop++){
+                        if(req.session.user._id == all.lstFollower[loop]._id){
+                            followed = true;
+                            break;
+                        }
+                    }
+                    return res.render('question', {
+                        user: {
+                            name: req.session.user.name,
+                            profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
+                        },
+                        answered: answered,
+                        question_id: req.params.id,
+                        title: question.title,
+                        viewNum: question.viewNum,
+                        createDate: question.date.toLocaleString(),
+                        answers: datas,
+                        more: false,
+                        followed: followed,
+                        lstFollower: all.lstFollower,
+                        answerNum: 0
+                    });
                 });
+
             })
         })
     }
@@ -104,10 +112,10 @@ router.post('/:question_id/follow', function(req, res, next) {
         Question.findByIdAndUpdate(req.params.question_id, {$push:{lstFollower: req.session.user._id}}, function(err, question){
             if(err){
                 console.log('follow error!');
-                return res.status(200).json({error: true});
+                return res.status(200).json({"error": "try again."});
             }
             else{
-                return res.status(200).json({success: true});
+                return res.status(200).json({"success": "success"});
             }
         })
     }
@@ -118,15 +126,14 @@ router.post('/:question_id/follow', function(req, res, next) {
 // 取消关注问题
 router.post('/:question_id/unfollow', function(req, res, next) {
     var answered = false;
-    console.log('enter follow');
     if(req.session.user){
         Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstFollower: req.session.user._id}}, function(err, question){
             if(err){
-                console.log('follow error!');
-                return res.status(200).json({error: true});
+                console.log('unfollow error!');
+                return res.status(200).json({"error": "try again."});
             }
             else{
-                return res.status(200).json({success: true});
+                return res.status(200).json({"success": "success"});
             }
         })
     }
@@ -172,59 +179,15 @@ router.post('/', function(req, res, next){
             console.error('save question error');
         }
     })
-
 })
 
-// 处理添加一个问题
-//router.post('/:question_id/answer', function(req, res, next){
-//    if(!req.session.user) {
-//        // 用户没有登录
-//        return res.redirect('/');
-//    }
-//    User.findById(req.session.user._id, function(err, user){
-//        if(err){
-//            console.error('find user id[' +  req.session.user._id + '] error!');
-//        }
-//        if(user == null){
-//            return res.status(200).json({error: "no userid"});
-//        }
-//    })
-//
-//    var answer = req.body.answer.trim();
-//    if(answer.length == 0){
-//        return res.status(200);
-//    }
-//
-//    Answer.create({
-//        userObjId: req.session.user._id,
-//        answer: answer
-//    }, function(err, answer){
-//        if(!err){
-//            Question.findByIdAndUpdate(req.params.question_id, {$push: {lstAnswer: answer._id}}, function(err, question){
-//                if(err){
-//                    console.log('add answer_id to question error');
-//                }
-//                else{
-//                    User.findByIdAndUpdate(req.session.user._id, {$push: {lstAnswer: answer._id}}, function(err, user){
-//                        if(!err){
-//                            return res.status(200).json({"success": "success"});
-//                        }
-//                        else{
-//                            console.error('add answer_id to userlist failed');
-//                        }
-//                    })
-//                }
-//            })
-//        }
-//    })
-//})
-
-// 处理添加一个问题
+// 处理添加一个回答
 router.post('/:question_id/answer/:answer_id', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
         return res.redirect('/');
     }
+    console.log('enter add question');
     User.findById(req.session.user._id, function(err, user){
         if(err){
             console.error('find user id[' +  req.session.user._id + '] error!');

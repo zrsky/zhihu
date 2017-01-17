@@ -2,71 +2,29 @@
  问题页面边栏模板
  viewNum            浏览次数
  followNum          关注人数
+ followed           是否关注了问题
+ lstFollower        关注者列表
+ createDate         创建时间
  */%>
 <div class="zu-main-sidebar">
     <div class="zm-side-section">
         <div class="zm-side-section-inner">
+            <% if(!followed){ %>
             <button class="follow-button zg-follow zg-btn-blue">关注问题</button>
+            <%}else{%>
+            <button class="follow-button zg-unfollow zg-btn-white">取消关注</button>
+            <% }%>
             <div class="zh-question-followers-sidebar">
                 <div class="zg-gray-normal">
-                    <a href="/question/0001/followers"><strong>0</strong></a>
+                    <a href="/question/0001/followers"><strong><%= lstFollower.length %></strong></a>
                     人关注该话题
                 </div>
                 <div class="list zu-small-avatar-list zg-clear">
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
+                    <% lstFollower.forEach(function(follower){ %>
+                    <a class="zm-item-link-avatar" href="/people/" + <%= follower._id %>>
+                        <img class="zm-item-img-avatar" src= <%= follower.profileUrl %>>
                     </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-3_s.jpg">
-                    </a>
-                    <a class="zm-item-link-avatar">
-                        <img src="img/people-4_s.jpg">
-                    </a>
+                    <% })%>
                 </div>
             </div>
         </div>
@@ -76,7 +34,7 @@
             <h3>问题状态</h3>
             <div class="zg-gray-normal">
                 最近活动于
-                <span class="time">2016--9-8</span>
+                <span class="time"><%= createDate %></span>
                 <span class="time">•</span>
                 <a href="/question/0001/log">查看问题日志</a>
             </div>

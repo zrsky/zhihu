@@ -80,11 +80,15 @@
                     <a class="zg-btn-white zu-button-more">更多</a>
                 <% } %>
                 <% if(!answered){ %>
-                    <%- include('components/answer-edit-wrap-add.ejs', {name: user.name, profileUrl: user.profileUrl })%>
+                    <%- include('components/answer-edit-wrap-add.ejs', {name: user.name, profileUrl: user.profileUrl }) %>
                 <% } %>
             </div>
         </div>
-        <%- include('components/question-sidebar', {viewNum: viewNum}) %>
+        <%- include('components/question-sidebar', {
+                viewNum: viewNum,
+                followed: followed,
+                lstFollower: lstFollower,
+                createDate: createDate }) %>
     </div>
     <div id="zh-footer" class="zh-footer">
         <div class="content zg-warp">

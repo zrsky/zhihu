@@ -229,9 +229,11 @@ $('a.zm-comment-cancel').click(function () {
     $('._commentForm-border').removeClass('expanded');
 })
 
-// 问题页面添加问题
+// 添加问题
 $('.zu-question-form-add').click(function(){
     var title = $('#zh-question-suggest-title-content').val();
+    var question_id = $('.zg-wrap.zu-main').attr('data-url');
+
     $.ajax({
         type: 'POST',
         url: '/question/',
@@ -254,13 +256,13 @@ $('.zu-question-form-add').click(function(){
     })
 })
 
-// 问题页面添加回答
+// 添加回答
 $('#zh-question-answer-form-wrap .submit-button').click(function(){
     var answer = $('#zh-question-answer-form-wrap #mock').text();
     var question_id = $('.zg-wrap.zu-main').attr('data-url');
     $.ajax({
         type: 'POST',
-        url: '/' + question_id + '/answer/',
+        url: '/question/' + question_id + '/answer/',
         data: {
             answer: answer
         },
@@ -320,43 +322,38 @@ $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").
     $(this).parent().parent().prev().css('display', 'block');
 })
 
-// 关注问题
-$('button.zg-follow').click(function(){
+// 关注，取消关注问题
+$('button.follow-button').click(function(){
     var question_id = $('.zg-wrap.zu-main').attr('data-url');
-
+    var $this = $(this);
+    var className = $this.prop('class');
+    var follow, url;
+    if(className.indexOf('zg-follow') != -1){
+        follow = true;
+        url = '/question/' + question_id + '/follow/';
+    }
+    else if(className.indexOf('zg-unfollow') != -1){
+        follow = false;
+        url = '/question/' + question_id + '/unfollow/';
+    }
+    else{
+        return;
+    }
     $.ajax({
         type: 'POST',
-        url: '/question/' + question_id + '/follow/',
+        url: url,
         dataType: 'JSON',
         success: function(data){
-            console.log(data.error);
             if(data.error){
-                console.log(data.error);
+                console.log("error:" + data.error);
             }
             else{
-                $(this).removeClass('zg-follow zg-btn-blue').addClass('zg-unfollow zg-btn-white').text('取消关注');
-            }
-        },
-        error: function(data){
-            console.log('error');
-        }
-    })
-})
-// 取消关注问题
-$('button.zg-unfollow').click(function(){
-    var question_id = $('.zg-wrap.zu-main').attr('data-url');
-
-    $.ajax({
-        type: 'POST',
-        url: '/question/' + question_id + '/unfollow/',
-        dataType: 'JSON',
-        success: function(data){
-            console.log(data.error);
-            if(data.error){
-                console.log(data.error);
-            }
-            else{
-                $(this).removeClass('zg-unfollow zg-btn-white').addClass('zg-follow zg-btn-blue').text('关注问题');
+                if(follow){
+                    $this.removeClass('zg-follow zg-btn-blue').addClass('zg-unfollow zg-btn-white').text('取消关注');
+                }
+                else{
+                    $this.removeClass('zg-unfollow zg-btn-white').addClass('zg-follow zg-btn-blue').text('关注问题');
+                }
             }
         },
         error: function(data){
