@@ -322,6 +322,77 @@ $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").
     $(this).parent().parent().prev().css('display', 'block');
 })
 
+// 删除回答
+function deleteAnswer(){
+    var answerUrl = $(this).parent().parent().parent().parent().children('link').attr('href');
+    var $answer = $(this).parent().parent().prev();
+    console.log('enter delete answer');
+    $.ajax({
+        type: 'POST',
+        url: answerUrl + '/delete',
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                var html = new EJS({url: '/views/answer-edit-wrap-add'}).render({name: data.name, profileUrl: data.profileUrl});
+                $('.zu-main-content-inner').append(html);
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+}
+
+// 我的答案 点击【设置】
+$('.zm-item-answer-owner a.js-settings').click(function(){
+    var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
+    if( $next.length == 0 ){
+        // 创建菜单
+        var html = new EJS({url: '/views/answerSetting'}).render();
+        $(this).after(html);
+        console.log($('.goog-menuitem-content')[0]);
+        $('.goog-menuitem').click(function(){
+            console.log('click!');
+        });
+        //(function (){
+        //    var $items = $('.setting-menu .goog-menuitem');
+        //    for(var loop = 0; loop < $items.length; loop++){
+        //        switch($items[loop].id){
+        //            case a:
+        //                break;
+        //            case b:
+        //                break;
+        //            case d:
+        //                $items[loop].addEventListener('click', function(){
+        //                    console.log('click delete');
+        //                });
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //    }
+        //})();
+    }
+    else{
+        if($next.prop('style').display == '' || $next.prop('style').display == 'block'){
+            $next.prop('style').display = 'none';
+        }
+        else{
+            $next.prop('style').display = 'block';
+        }
+    }
+})
+$('.zm-item-answer-owner a.js-settings').blur(function(){
+    var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
+    if($next.length == 1 && ($next.prop('style').display == '' || $next.prop('style').display == 'block')){
+        $next.prop('style').display = 'none';
+    }
+})
+
+
 // 关注，取消关注问题
 $('button.follow-button').click(function(){
     var question_id = $('.zg-wrap.zu-main').attr('data-url');

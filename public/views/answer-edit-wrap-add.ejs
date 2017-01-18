@@ -1,0 +1,134 @@
+<%/*
+问题页面 回答编辑框 模板
+name            昵称
+profileUrl      头像路径
+*/%>
+<div id="zh-question-answer-form-wrap" class="zh-question-answer-form-wrap">
+    <div class="zm-editable-editor-wrap">
+        <div class="zm-answer-form">
+            <a href="/people/jiang-chen-guang" class="zm-item-link-avatar"><img style="width: 100%; height: 100%" src=<%= profileUrl %>></a>
+            <div>
+                <div class="zu-answer-form-title">
+                    <a href="/people/jiang-chen-guang"><%= name %></a>
+                    <span>
+                        <a name="edit-bio" class="zu-edit-button" href="#">
+                            <i class="zu-edit-button-icon"></i>填写话题经验，提升回答可信度
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="zm-editable-editor-outer">
+            <div class="zm-editable-toolbar-container">
+                <div class="goog-toolbar">
+                    <div class="goog-inline-block goog-toolbar-button " id="toggleFullScreen" title="写作模式" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-max"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="+Bold" title="粗体" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-bold"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="italic" title="斜体" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-italic"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="underline" title="下划线" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-underline"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-toolbar-separator goog-inline-block">&nbsp;</div>
+                    <div class="goog-inline-block goog-toolbar-button" id="quote" title="引用" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-quote"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="code" title="代码" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-code"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="orderedList" title="有序列表" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-orderedList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="unorderedList" title="无序列表" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-unorderedList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="equation" title="公式" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-equation"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-toolbar-separator goog-inline-block">&nbsp;</div>
+                    <div class="goog-inline-block goog-toolbar-button" id="image" title="插入图片" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-image"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-inline-block goog-toolbar-button" id="video" title="插入视频" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-video"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goog-toolbar-separator goog-inline-block">&nbsp;</div>
+                    <div class="goog-inline-block goog-toolbar-button" id="removeFormat" title="清楚格式" role="button">
+                        <div class="goog-inline-block goog-toolbar-button-outer-box">
+                            <div class="goog-inline-block goog-toolbar-button-inner-box">
+                                <div class="tr-icon tr-clearFormat"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="zm-editable-editor-field-wrap">
+                <div id="mock" class="zm-editable-editor-field-element editable" contenteditable="true"></div>
+            </div>
+        </div>
+        <div class="zm-command">
+            <label class="zg-left anno-box">
+                <input type="checkbox">匿名
+                <span>&nbsp;</span>
+            </label>
+            <label class="zg-left copyright-box">
+                <select name="copyright">
+                    <option value="1">允许规范转载</option>
+                    <option value="1">允许付费转载</option>
+                    <option value="1">禁止转载</option>
+                </select>
+            </label>
+            <span class="zg-right">
+                <a class="submit-button zg-btn-blue" href="javascript:;">发布回答</a>
+            </span>
+        </div>
+    </div>
+</div>

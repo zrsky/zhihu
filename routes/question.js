@@ -104,45 +104,7 @@ router.get('/:id', function(req, res, next) {
     }
 });
 
-// 关注问题
-router.post('/:question_id/follow', function(req, res, next) {
-    var answered = false;
-    console.log('enter follow');
-    if(req.session.user){
-        Question.findByIdAndUpdate(req.params.question_id, {$push:{lstFollower: req.session.user._id}}, function(err, question){
-            if(err){
-                console.log('follow error!');
-                return res.status(200).json({"error": "try again."});
-            }
-            else{
-                return res.status(200).json({"success": "success"});
-            }
-        })
-    }
-    else{
-        return res.redirect('/');
-    }
-});
-// 取消关注问题
-router.post('/:question_id/unfollow', function(req, res, next) {
-    var answered = false;
-    if(req.session.user){
-        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstFollower: req.session.user._id}}, function(err, question){
-            if(err){
-                console.log('unfollow error!');
-                return res.status(200).json({"error": "try again."});
-            }
-            else{
-                return res.status(200).json({"success": "success"});
-            }
-        })
-    }
-    else{
-        return res.redirect('/');
-    }
-});
-
-// 处理添加一个问题
+// 添加问题
 router.post('/', function(req, res, next){
     if(!req.session.user) {
         return res.redirect('/');
@@ -181,7 +143,84 @@ router.post('/', function(req, res, next){
     })
 })
 
+// 关注问题
+router.post('/:question_id/follow', function(req, res, next) {
+    var answered = false;
+    console.log('enter follow');
+    if(req.session.user){
+        Question.findByIdAndUpdate(req.params.question_id, {$push:{lstFollower: req.session.user._id}}, function(err, question){
+            if(err){
+                console.log('follow error!');
+                return res.status(200).json({"error": "try again."});
+            }
+            else{
+                return res.status(200).json({"success": "success"});
+            }
+        })
+    }
+    else{
+        return res.redirect('/');
+    }
+});
+// 取消关注问题
+router.post('/:question_id/unfollow', function(req, res, next) {
+    var answered = false;
+    if(req.session.user){
+        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstFollower: req.session.user._id}}, function(err, question){
+            if(err){
+                console.log('unfollow error!');
+                return res.status(200).json({"error": "try again."});
+            }
+            else{
+                return res.status(200).json({"success": "success"});
+            }
+        })
+    }
+    else{
+        return res.redirect('/');
+    }
+});
+
 // 处理添加一个回答
+router.post('/:question_id/answer', function(req, res, next){
+    if(!req.session.user) {
+        // 用户没有登录
+        return res.redirect('/');
+    }
+    console.log('enter add answer');
+    User.findById(req.session.user._id, function(err, user){
+        if(err){
+            console.error('find user id[' +  req.session.user._id + '] error!');
+        }
+        if(user == null){
+            return res.status(200).json({error: "no userid"});
+        }
+    })
+
+    var answer = req.body.answer.trim();
+    if(answer.length == 0){
+        return res.status(200);
+    }
+
+    Answer.create({
+        userObjId: req.session.user._id,
+        answer: answer
+    }, function(err, answer){
+        if(err){
+            console.log('create answer error');
+            return;
+        }
+        Question.findByIdAndUpdate(req.params.question_id, {$push: {lstAnswer: answer._id}}, function(err, question){
+            if(err){
+                console.log('update answer list error');
+                return;
+            }
+            return res.status(200).json({"success": "success"});
+        })
+    })
+})
+
+// 添加一个回答
 router.post('/:question_id/answer/:answer_id', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
@@ -209,6 +248,50 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
         else{
             return res.status(200).json({"success": "success"});
         }
+    })
+})
+
+// 删除一个回答
+router.post('/:question_id/answer/:answer_id/delete', function(req, res, next){
+    if(!req.session.user) {
+        // 用户没有登录
+        return res.redirect('/');
+    }
+
+    User.findById(req.session.user._id, function(err, user){
+        if(err){
+            console.error('find user id[' +  req.session.user._id + '] error!');
+        }
+        if(user == null){
+            return res.status(200).json({error: "no userid"});
+        }
+    })
+
+    Answer.findById(req.params.answer_id, function(err, answer){
+        if(err){
+            console.log('add answer_id to question error');
+            return res.status(200).json({"error": "error"});
+        }
+        if(answer.userObjId != req.session.user._id){
+            return res.status(200).json({"error": "u are not author!"});
+        }
+        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
+            if(err){
+                console.log('update question error');
+                return res.status(200).json({"error": "u are not author!"});
+            }
+            answer.remove(function(err){
+                if(err){
+                    console.log('update question error');
+                    return res.status(200).json({"error": "u are not author!"});
+                }
+                return res.status(200).json({
+                    "name": user.name,
+                    "profileUrl": user.profileUrl || "/images/system/profile_s.jpg"});
+            })
+        })
+
+
     })
 })
 

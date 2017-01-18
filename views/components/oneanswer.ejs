@@ -72,15 +72,31 @@ answerOwner     我的答案
         <div class="zm-meta-panel">
             <a class="answer-date-link meta-item"><%= date %></a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
+<% if(!answerOwner){ %>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
+<% } %>
             <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
             <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
+<% if(!answerOwner){ %>
             <span class="zg-bull zu-autoHide">•</span>
             <a href="#" class="js-noHelp zu-autoHide meta-item">没有帮助</a>
             <span class="zg-bull zu-autoHide">•</span>
             <a href="#" class="js-report zu-autoHide meta-item">举报</a>
             <span class="zg-bull">•</span>
             <a href="#" class="js-report meta-item">作者保留权利</a>
+<% }else{ %>
+            <a href="#" class="js-settings zu-autoHide meta-item">
+                <div class="goog-inline-block goog-menu-button-outer-box">
+                    <div class="goog-inline-block goog-menu-button-inner-box">
+                        <div class="goog-inline-block goog-menu-button-caption">
+                            <i class="zg-icon zg-icon-settings"></i>设置
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <span class="zg-bull">•</span>
+            <a href="#" class="copyright meta-item">允许规范转载</a>
+<% } %>
         </div>
     </div>
 </div>
