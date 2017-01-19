@@ -1,17 +1,29 @@
 <%/*
-问题页面 一条答案模版
-anthId: 回答作者id
-content: 回答内容
-data: 回答时间
-upNum: 支持数目
-downNum: 反对数目
-isUP: 支持（T）／反对(F)
-*/%>
+ 问题页面 一条答案模版
+ answerUrl       答案路径
+ name            昵称
+ anthId          回答作者id
+ content         回答内容
+ bestAnswer      优秀答题者
+ profileUrl      头像路径
+ date            回答时间
+ upNum           支持数目
+ answerOwner     我的答案
+ */%>
+<% if(!answerOwner){ %>
 <div class="zm-item-answer zm-item-expanded">
+<% } else {%>
+<div class="zm-item-answer zm-item-expanded zm-item-answer-owner">
+<% } %>
+    <link itemprop="url" href="<%= answerUrl %>">
     <div class="zm-votebar">
+        <% if(0){ %>
         <button class="up pressed" title="赞同">
+        <% }else{ %>
+        <button class="up" title="赞同">
+        <% } %>
             <i class="icon vote-arrow"></i>
-            <span class="count">78</span>
+            <span class="count"><%= upNum %></span>
         </button>
         <button class="down" title="反对，不会显示您的姓名">
             <i class="icon vote-arrow"></i>
@@ -20,46 +32,72 @@ isUP: 支持（T）／反对(F)
     <div class="answer-head">
         <div class="zm-item-answer-author-info">
             <a class="zm-item-link-avatar">
-                <img src="img/people-3_s.jpg" class="Avatar">
+                <img src=<%= profileUrl %> class="Avatar">
             </a>
             <span class="summary-wrapper">
                 <span class="author-link-line">
-                    <a class="author-link" href="/people/woshixiaosongshu">Cat Chen</a>
+                    <a class="author-link" href="/people/woshixiaosongshu"><%= name %></a>
+                    <% if(bestAnswer){ %>
                     <span class="icon icon-badge-best-answer icon-badge"></span>
+                    <% } %>
                 </span>
-                <span class="badge-summary">
-                    <a href="/people/catchen">程序员等&nbsp;3&nbsp;个话题优秀回答者</a>
-                </span>
-                <span title="Materials Science, PhD" class="bio">上知乎，求欢乐</span>
+                <% if(bio){ %>
+                <span title="Materials Science, PhD" class="bio"><%= bio %></span>
+                <% } %>
             </span>
         </div>
         <div class="zm-item-vote-info">
-            <span class="voters text">
-                <a href="#" class="more text">
-                    <span class="js-voteCount">78</span>&nbsp;个赞同
-                </a>
-            </span>
-        </div>
+        <span class="voters text">
+            <a href="#" class="more text">
+                <span class="js-voteCount"><%= upNum %></span>&nbsp;个赞同
+            </a>
+        </span>
     </div>
-    <div class="zm-item-rich-text expandable">
-        <div class="zh-summary clearFix" style="display: none;"></div>
+</div>
+<div class="zm-item-rich-text expandable">
+    <div class="zh-summary clearFix" style="display: none;"></div>
         <div class="zm-editable-content clearFix">
             <%= content %>
+<% if(answerOwner){ %>
+            <a href="javascript:;" class="zu-edit-button" name="edit">
+                <i class="zu-edit-button-icon"></i>
+                <span>修改</span>
+            </a>
+<% } %>
         </div>
+<% if(answerOwner){ %>
+        <%- include('answer-edit-wrap-owner', { content: content }) %>
+<% }%>
     </div>
     <div class="zm-item-meta answer-action">
         <div class="zm-meta-panel">
-            <a class="answer-date-link meta-item">今天</a>
+            <a class="answer-date-link meta-item"><%= date %></a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
+<% if(!answerOwner){ %>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
+<% } %>
             <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
             <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
+<% if(!answerOwner){ %>
             <span class="zg-bull zu-autoHide">•</span>
             <a href="#" class="js-noHelp zu-autoHide meta-item">没有帮助</a>
             <span class="zg-bull zu-autoHide">•</span>
             <a href="#" class="js-report zu-autoHide meta-item">举报</a>
             <span class="zg-bull">•</span>
             <a href="#" class="js-report meta-item">作者保留权利</a>
+<% }else{ %>
+            <a href="#" class="js-settings zu-autoHide meta-item">
+                <div class="goog-inline-block goog-menu-button-outer-box">
+                    <div class="goog-inline-block goog-menu-button-inner-box">
+                        <div class="goog-inline-block goog-menu-button-caption">
+                            <i class="zg-icon zg-icon-settings"></i>设置
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <span class="zg-bull">•</span>
+            <a href="#" class="copyright meta-item">允许规范转载</a>
+<% } %>
         </div>
     </div>
 </div>

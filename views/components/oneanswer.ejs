@@ -3,6 +3,7 @@
 answerUrl       答案路径
 name            昵称
 anthId          回答作者id
+bestAnswer      最佳答题者
 content         回答内容
 profileUrl      头像路径
 date            回答时间
@@ -36,7 +37,7 @@ answerOwner     我的答案
             <span class="summary-wrapper">
                 <span class="author-link-line">
                     <a class="author-link" href="/people/woshixiaosongshu"><%= name %></a>
-                    <% if(goodAnswer){ %>
+                    <% if(bestAnswer){ %>
                         <span class="icon icon-badge-best-answer icon-badge"></span>
                     <% } %>
                 </span>
@@ -65,7 +66,7 @@ answerOwner     我的答案
             <% } %>
         </div>
         <% if(answerOwner){ %>
-            <%- include('answer-edit-wrap-owner', { content: content }) %>
+            <%- include('./answer-edit-wrap-owner.ejs', {content: content}) %>
         <% }%>
     </div>
     <div class="zm-item-meta answer-action">

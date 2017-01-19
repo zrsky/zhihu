@@ -273,8 +273,17 @@ $('#zh-question-answer-form-wrap .submit-button').click(function(){
                 console.log(data.error);
             }
             else{
-                var html = new EJS({url: '/views/oneanswer'}).render({content: answer});
-                $('#zh-question-answer-wrap').append(html);
+                //var html = new EJS({url: '/views/oneanswer'}).render({
+                //    content: answer,
+                //    answerUrl: '/question/'+ question_id + '/answer/' + data.answer_id,
+                //    upNum: 0,
+                //    date: data.date,
+                //    bestAnswer: data.bestAnswer,
+                //    bio: data.bio,
+                //    name: data.name,
+                //    answerOwner: data.answerOwner,
+                //    profileUrl: data.profileUrl});
+                $('#zh-question-answer-wrap').append(data.myAnswer);
                 // TODO:隐藏答题框体
             }
         },
@@ -323,10 +332,8 @@ $(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").
 })
 
 // 删除回答
-function deleteAnswer(){
-    var answerUrl = $(this).parent().parent().parent().parent().children('link').attr('href');
-    var $answer = $(this).parent().parent().prev();
-    console.log('enter delete answer');
+function deleteAnswer(element){
+    var answerUrl = $(element).parents('.zm-item-answer-owner').children('link').attr('href');
     $.ajax({
         type: 'POST',
         url: answerUrl + '/delete',
@@ -336,8 +343,7 @@ function deleteAnswer(){
                 console.log(data.error);
             }
             else{
-                var html = new EJS({url: '/views/answer-edit-wrap-add'}).render({name: data.name, profileUrl: data.profileUrl});
-                $('.zu-main-content-inner').append(html);
+                $('.zu-main-content-inner').append(data.answerEditWrap);
             }
         },
         error: function(data){
@@ -353,28 +359,31 @@ $('.zm-item-answer-owner a.js-settings').click(function(){
         // 创建菜单
         var html = new EJS({url: '/views/answerSetting'}).render();
         $(this).after(html);
-        console.log($('.goog-menuitem-content')[0]);
-        $('.goog-menuitem').click(function(){
-            console.log('click!');
-        });
-        //(function (){
-        //    var $items = $('.setting-menu .goog-menuitem');
-        //    for(var loop = 0; loop < $items.length; loop++){
-        //        switch($items[loop].id){
-        //            case a:
-        //                break;
-        //            case b:
-        //                break;
-        //            case d:
-        //                $items[loop].addEventListener('click', function(){
-        //                    console.log('click delete');
-        //                });
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //})();
+        (function (){
+            var $items = $('.setting-menu .goog-menuitem');
+            for(var loop = 0; loop < $items.length; loop++){
+                switch($items[loop].id){
+                    case 'a':
+                        $items[loop].addEventListener('click', function(){
+                            console.log('click a');
+                        });
+                        break;
+                    case 'b':
+                        $items[loop].addEventListener('click', function(){
+                            console.log('click b');
+                        });
+                        break;
+                    case 'd':
+                        $items[loop].addEventListener('click', function(){
+                            console.log('click d');
+                            deleteAnswer(this);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            }
+        })();
     }
     else{
         if($next.prop('style').display == '' || $next.prop('style').display == 'block'){
@@ -385,12 +394,12 @@ $('.zm-item-answer-owner a.js-settings').click(function(){
         }
     }
 })
-$('.zm-item-answer-owner a.js-settings').blur(function(){
-    var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
-    if($next.length == 1 && ($next.prop('style').display == '' || $next.prop('style').display == 'block')){
-        $next.prop('style').display = 'none';
-    }
-})
+//$('.zm-item-answer-owner a.js-settings').blur(function(){
+//    var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
+//    if($next.length == 1 && ($next.prop('style').display == '' || $next.prop('style').display == 'block')){
+//        $next.prop('style').display = 'none';
+//    }
+//})
 
 
 // 关注，取消关注问题

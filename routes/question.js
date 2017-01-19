@@ -12,8 +12,9 @@ var Question = require('../model/mongo').Question;
 var Answer = require('../model/mongo').Answer;
 var User = require('../model/mongo').User;
 var fs = require('fs');
+var ejs = require('ejs');
 
-// 获取问题页面
+// 获取问题
 router.get('/:id', function(req, res, next) {
     var answered = false;
 
@@ -78,6 +79,7 @@ router.get('/:id', function(req, res, next) {
                             break;
                         }
                     }
+
                     return res.render('question', {
                         user: {
                             name: req.session.user.name,
@@ -95,7 +97,6 @@ router.get('/:id', function(req, res, next) {
                         answerNum: 0
                     });
                 });
-
             })
         })
     }
@@ -181,13 +182,13 @@ router.post('/:question_id/unfollow', function(req, res, next) {
     }
 });
 
-// 处理添加一个回答
+// 添加回答
 router.post('/:question_id/answer', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
         return res.redirect('/');
     }
-    console.log('enter add answer');
+    var userInfo = {};
     User.findById(req.session.user._id, function(err, user){
         if(err){
             console.error('find user id[' +  req.session.user._id + '] error!');
@@ -195,8 +196,12 @@ router.post('/:question_id/answer', function(req, res, next){
         if(user == null){
             return res.status(200).json({error: "no userid"});
         }
+        userInfo.name = user.name;
+        userInfo.bio = user.bio;
+        userInfo.profileUrl = user.profileUrl;
     })
 
+    console.log(userInfo);
     var answer = req.body.answer.trim();
     if(answer.length == 0){
         return res.status(200);
@@ -215,12 +220,23 @@ router.post('/:question_id/answer', function(req, res, next){
                 console.log('update answer list error');
                 return;
             }
-            return res.status(200).json({"success": "success"});
+            ejs.renderFile('views/components/oneanswer.ejs', {
+                    answerUrl: '/question/'+ req.params.question_id + '/answer/' + answer.answer_id,
+                    content: answer.answer,
+                    upNum: 0,
+                    date: answer.date,
+                    bestAnswer: false,
+                    bio: userInfo.bio,
+                    name: userInfo.name,
+                    answerOwner: true,
+                    profileUrl: userInfo.profileUrl }, function(err, html){
+                return res.status(200).json({"myAnswer": html});
+            });
         })
     })
 })
 
-// 添加一个回答
+// 修改回答
 router.post('/:question_id/answer/:answer_id', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
@@ -251,28 +267,19 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
     })
 })
 
-// 删除一个回答
+// 删除回答
 router.post('/:question_id/answer/:answer_id/delete', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
         return res.redirect('/');
     }
 
-    User.findById(req.session.user._id, function(err, user){
-        if(err){
-            console.error('find user id[' +  req.session.user._id + '] error!');
-        }
-        if(user == null){
-            return res.status(200).json({error: "no userid"});
-        }
-    })
-
-    Answer.findById(req.params.answer_id, function(err, answer){
+    Answer.findById(req.params.answer_id).populate('userObjId').exec(function(err, answer){
         if(err){
             console.log('add answer_id to question error');
             return res.status(200).json({"error": "error"});
         }
-        if(answer.userObjId != req.session.user._id){
+        if(answer.userObjId._id != req.session.user._id){
             return res.status(200).json({"error": "u are not author!"});
         }
         Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
@@ -285,13 +292,16 @@ router.post('/:question_id/answer/:answer_id/delete', function(req, res, next){
                     console.log('update question error');
                     return res.status(200).json({"error": "u are not author!"});
                 }
-                return res.status(200).json({
-                    "name": user.name,
-                    "profileUrl": user.profileUrl || "/images/system/profile_s.jpg"});
-            })
+
+                fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
+                    var html = ejs.render(data.toString(), {
+                        "name": answer.userObjId.name,
+                        "profileUrl": answer.userObjId.profileUrl || "/images/system/profile_s.jpg"});
+
+                    return res.status(200).json({"answerEditWrap": html});
+                });
+            });
         })
-
-
     })
 })
 

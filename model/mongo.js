@@ -48,7 +48,7 @@ exports.Question = mongoose.model('Question', questionSchema);
  * upNum            赞同数
  * */
 var answerSchema = mongoose.Schema({
-    userObjId: mongoose.Schema.Types.ObjectId,
+    userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     answer: String,
     date: { type: Date, default: Date.now },
     upNum: {type: Number, default: 0}
