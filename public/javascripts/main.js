@@ -1,4 +1,15 @@
-// 支持，反对
+/* commonFunction start */
+function stopProp(event){
+    if(event.stopPropagation){
+        event.stopPropagation();
+    }
+    else if(event.cancelBubble){
+        event.cancelBubble();
+    }
+}
+/* commonFunction end */
+
+// 答案支持，反对
 $('.zm-votebar').each(function () {
     // 支持
     $(this).children('button:first').click(function () {
@@ -42,20 +53,20 @@ $('.zm-votebar').each(function () {
     })
 })
 
-// 赞，取消赞
-$('._commentItem-footer').each(function () {
-    $(this).children('button').eq(1).click(function () {
-        val = $(this).parent().children('._commentItem-links').children('span:first').text();
-        if($(this).children('span:first').html() == "赞"){
-            $(this).children('span:first').html("取消赞");
-            $(this).parent().children('._commentItem-links').children('span:first').text(parseInt(val) + 1);
-        }
-        else{
-            $(this).children('span').html("赞")
-            $(this).parent().children('._commentItem-links').children('span:first').text(parseInt(val) - 1);
-        }
-    })
-})
+//// 评论赞，取消赞
+//$('._commentItem-footer').each(function () {
+//    $(this).children('button').eq(1).click(function () {
+//        val = $(this).parent().children('._commentItem-links').children('span:first').text();
+//        if($(this).children('span:first').html() == "赞"){
+//            $(this).children('span:first').html("取消赞");
+//            $(this).parent().children('._commentItem-links').children('span:first').text(parseInt(val) + 1);
+//        }
+//        else{
+//            $(this).children('span').html("赞")
+//            $(this).parent().children('._commentItem-links').children('span:first').text(parseInt(val) - 1);
+//        }
+//    })
+//})
 // 展开正文
 $('.zh-summary').each(function () {
     $(this).click(function () {
@@ -75,7 +86,7 @@ $('.item-collapse').each(function () {
 
 // panel固定
 function oneNode() {
-    this.feedID = '';           // feedID
+    this.feedID = '';               // feedID
     this.collapseFixed = false;     // 收起按钮是否固定
     this.upDownFixed = false;       // 支持反对是否固定
     this.ifPanelFixed = false;      // 评论栏是否固定
@@ -175,8 +186,8 @@ window.addEventListener('scroll', function () {
             $(this).children().children().children('button').removeClass('is-sticky');
         }
     })
-
 })
+
 // 评论展开收起
 $('.toggle-comment').each(function () {
     $(this).click(function () {
@@ -257,41 +268,42 @@ $('.zu-question-form-add').click(function(){
 })
 
 // 添加回答
-$('#zh-question-answer-form-wrap .submit-button').click(function(){
-    var answer = $('#zh-question-answer-form-wrap #mock').text();
-    var question_id = $('.zg-wrap.zu-main').attr('data-url');
-    $.ajax({
-        type: 'POST',
-        url: '/question/' + question_id + '/answer/',
-        data: {
-            answer: answer
-        },
-        dataType: 'JSON',
-        success: function(data){
-            console.log(data.error);
-            if(data.error){
-                console.log(data.error);
-            }
-            else{
-                //var html = new EJS({url: '/views/oneanswer'}).render({
-                //    content: answer,
-                //    answerUrl: '/question/'+ question_id + '/answer/' + data.answer_id,
-                //    upNum: 0,
-                //    date: data.date,
-                //    bestAnswer: data.bestAnswer,
-                //    bio: data.bio,
-                //    name: data.name,
-                //    answerOwner: data.answerOwner,
-                //    profileUrl: data.profileUrl});
-                $('#zh-question-answer-wrap').append(data.myAnswer);
-                // TODO:隐藏答题框体
-            }
-        },
-        error: function(data){
-            console.log('error');
+function clickAddAnswer(){
+    $('#zh-question-answer-form-wrap .submit-button').click(function(){
+        var answer = $('#zh-question-answer-form-wrap #mock').text();
+        var question_id = $('.zg-wrap.zu-main').attr('data-url');
+        function addListener(){
+            // edit
+            editOwnerAnswer();
+            clickJsSettings();
+            clickSave();
+            clickCancel();
         }
+
+        $.ajax({
+            type: 'POST',
+            url: '/question/' + question_id + '/answer/',
+            data: {
+                answer: answer
+            },
+            dataType: 'JSON',
+            success: function(data){
+                if(data.error){
+                    console.log(data.error);
+                }
+                else{
+                    $('#zh-question-answer-wrap').append(data.myAnswer);
+                    addListener();
+                    $('#zh-question-answer-form-wrap').remove();
+                }
+            },
+            error: function(data){
+                console.log('error');
+            }
+        })
     })
-})
+}
+clickAddAnswer();
 
 // 问题页面【点击】编辑我的回答
 function editOwnerAnswer(){
@@ -302,105 +314,124 @@ function editOwnerAnswer(){
 };
 editOwnerAnswer();
 // 问题页面【发布】我的回答
-$(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").click(function(){
-    var answer = $('.zm-editable-editor-wrap #mock').text();
-    var url = $(this).parent().parent().parent().parent().children('link').attr('href');
-    var $answer = $(this).parent().parent().prev();
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: {
-            answer: answer
-        },
-        dataType: 'JSON',
-        success: function(data){
-            if(data.error){
-                console.log(data.error);
+function clickSave() {
+    $(".zm-item-answer-owner .zm-item-rich-text .zm-editable-editor-wrap a[name='save']").click(function () {
+        var answer = $('.zm-editable-editor-wrap #mock').text();
+        var url = $(this).parent().parent().parent().parent().children('link').attr('href');
+        var $answer = $(this).parent().parent().prev();
+        console.log('enter edit answer');
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                answer: answer
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.error) {
+                    console.log(data.error);
+                }
+                else {
+                    $answer.html(answer + '<a href="javascript:;" class="zu-edit-button" name="edit"><i class="zu-edit-button-icon"></i><span>修改</span></a>');
+                    editOwnerAnswer();
+                }
+            },
+            error: function (data) {
+                console.log('error');
             }
-            else{
-                $answer.html(answer + '<a href="javascript:;" class="zu-edit-button" name="edit"><i class="zu-edit-button-icon"></i><span>修改</span></a>');
-                editOwnerAnswer();
-            }
-        },
-        error: function(data){
-            console.log('error');
-        }
+        })
+
+        $(this).parent().parent().css('display', 'none');
+        $(this).parent().parent().prev().css('display', 'block');
+    });
+};
+clickSave();
+// 问题页面【取消】编辑我的回答
+function clickCancel(){
+    $(".zm-item-answer-owner .zm-item-rich-text .zm-editable-editor-wrap a[name='cancel']").click(function(){
+        $(this).parent().parent().css('display', 'none');
+        $(this).parent().parent().prev().css('display', 'block');
     })
+};
+clickCancel();
 
-    $(this).parent().parent().css('display', 'none');
-    $(this).parent().parent().prev().css('display', 'block');
-})
+// 我的答案 点击【设置】
+function clickJsSettings(){
+    $('.zm-item-answer-owner a.js-settings').click(function(event){
+        // 删除回答
+        function deleteAnswer(element){
+            var answerUrl = $(element).parents('.zm-item-answer-owner').children('link').attr('href');
+            $.ajax({
+                type: 'POST',
+                url: answerUrl + '/delete',
+                dataType: 'JSON',
+                success: function(data){
+                    if(data.error){
+                        console.log(data.error);
+                    }
+                    else{
+                        $('.zu-main-content-inner').append(data.answerEditWrap);
+                        clickAddAnswer();
+                        $('.zm-item-answer-owner').remove();
+                    }
+                },
+                error: function(data){
+                    console.log('error');
+                }
+            })
+        }
 
-// 删除回答
-function deleteAnswer(element){
-    var answerUrl = $(element).parents('.zm-item-answer-owner').children('link').attr('href');
-    $.ajax({
-        type: 'POST',
-        url: answerUrl + '/delete',
-        dataType: 'JSON',
-        success: function(data){
-            if(data.error){
-                console.log(data.error);
+        var $setting = $('.zm-item-answer-owner a.js-settings'),
+            $next = $setting.next('.setting-menu');
+        if( $next.length == 0 ){
+            // 创建菜单
+            var html = new EJS({url: '/views/answerSetting'}).render();
+            $setting.after(html);
+            (function (){
+                var $items = $('.setting-menu .goog-menuitem');
+                for(var loop = 0; loop < $items.length; loop++){
+                    switch($items[loop].id){
+                        case 'a':
+                            $items[loop].addEventListener('click', function(){
+                                console.log('click a');
+                            });
+                            break;
+                        case 'b':
+                            $items[loop].addEventListener('click', function(){
+                                console.log('click b');
+                            });
+                            break;
+                        case 'd':
+                            $items[loop].addEventListener('click', function(){
+                                //$next.prop('style').display = 'none';
+                                deleteAnswer(this);
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            })();
+        }
+        else{
+            if($next.prop('style').display == '' || $next.prop('style').display == 'block'){
+                $next.prop('style').display = 'none';
             }
             else{
-                $('.zu-main-content-inner').append(data.answerEditWrap);
+                $next.prop('style').display = 'block';
             }
-        },
-        error: function(data){
-            console.log('error');
         }
+        stopProp(event);
     })
 }
 
-// 我的答案 点击【设置】
-$('.zm-item-answer-owner a.js-settings').click(function(){
+$('body').click(function () {
     var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
-    if( $next.length == 0 ){
-        // 创建菜单
-        var html = new EJS({url: '/views/answerSetting'}).render();
-        $(this).after(html);
-        (function (){
-            var $items = $('.setting-menu .goog-menuitem');
-            for(var loop = 0; loop < $items.length; loop++){
-                switch($items[loop].id){
-                    case 'a':
-                        $items[loop].addEventListener('click', function(){
-                            console.log('click a');
-                        });
-                        break;
-                    case 'b':
-                        $items[loop].addEventListener('click', function(){
-                            console.log('click b');
-                        });
-                        break;
-                    case 'd':
-                        $items[loop].addEventListener('click', function(){
-                            console.log('click d');
-                            deleteAnswer(this);
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
-        })();
-    }
-    else{
-        if($next.prop('style').display == '' || $next.prop('style').display == 'block'){
-            $next.prop('style').display = 'none';
-        }
-        else{
-            $next.prop('style').display = 'block';
-        }
+    if($next.length == 1 && ($next.prop('style').display == '' || $next.prop('style').display == 'block')){
+        $next.prop('style').display = 'none';
     }
 })
-//$('.zm-item-answer-owner a.js-settings').blur(function(){
-//    var $next = $('.zm-item-answer-owner a.js-settings').next('.setting-menu');
-//    if($next.length == 1 && ($next.prop('style').display == '' || $next.prop('style').display == 'block')){
-//        $next.prop('style').display = 'none';
-//    }
-//})
-
+clickJsSettings();
 
 // 关注，取消关注问题
 $('button.follow-button').click(function(){
@@ -442,11 +473,6 @@ $('button.follow-button').click(function(){
     })
 })
 
-// 问题页面【取消】编辑我的回答
-$(".zm-item-answer .zm-item-rich-text .zm-editable-editor-wrap a[name='cancel']").click(function(){
-    $(this).parent().parent().css('display', 'none');
-    $(this).parent().parent().prev().css('display', 'block');
-})
 
 // 输入回答时高亮
 $('#mock').focus(function () {

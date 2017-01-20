@@ -45,12 +45,28 @@ exports.Question = mongoose.model('Question', questionSchema);
  * userObjId        答案作者"_id"
  * answer           答案内容
  * date             回答时间
- * upNum            赞同数
+ * lstActions       对此答案点赞，支持，反对的记录
+ * agreeNum         赞同数
  * */
 var answerSchema = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     answer: String,
     date: { type: Date, default: Date.now },
-    upNum: {type: Number, default: 0}
+    lstActions: [{type: mongoose.Schema.Types.ObjectId, ref: 'answerAction'}],
+    agreeNum: {type: Number, default: 0}
 });
 exports.Answer = mongoose.model('Answer', answerSchema);
+
+/* 对答案的操作模型
+ * userObjId        操作用户"_id"
+ * isAgree          是否已赞同
+ * isDisAgree       是否已反对
+ * isThanks         是否已感谢
+ *  */
+var answerActionSchema = mongoose.Schema({
+    userObjId: {type: mongoose.Schema.Types.ObjectId, unique: true, ref: 'User'},
+    isAgree: {type: Boolean, default: false},
+    isDisAgree: {type: Boolean, default: false},
+    isThanks: {type: Boolean, default: false}
+});
+exports.AnswerAction = mongoose.model('AnswerAction', answerActionSchema);

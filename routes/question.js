@@ -10,9 +10,11 @@ var express = require('express');
 var router = express.Router();
 var Question = require('../model/mongo').Question;
 var Answer = require('../model/mongo').Answer;
+var AnswerAction = require('../model/mongo').AnswerAction;
 var User = require('../model/mongo').User;
 var fs = require('fs');
 var ejs = require('ejs');
+var dateFormat = require('../lib/commFunc.js').dateFormat;
 
 // 获取问题
 router.get('/:id', function(req, res, next) {
@@ -48,8 +50,8 @@ router.get('/:id', function(req, res, next) {
                                         }
                                         resolve({
                                             content: answer.answer,
-                                            upNum: answer.upNum,
-                                            date: answer.date.toLocaleString(),
+                                            agreeNum: answer.agreeNum,
+                                            date: dateFormat(answer.date),
                                             answer_id: answer._id,
                                             user: {
                                                 _id: user._id,
@@ -89,7 +91,7 @@ router.get('/:id', function(req, res, next) {
                         question_id: req.params.id,
                         title: question.title,
                         viewNum: question.viewNum,
-                        createDate: question.date.toLocaleString(),
+                        createDate: dateFormat(question.date),
                         answers: datas,
                         more: false,
                         followed: followed,
@@ -221,10 +223,10 @@ router.post('/:question_id/answer', function(req, res, next){
                 return;
             }
             ejs.renderFile('views/components/oneanswer.ejs', {
-                    answerUrl: '/question/'+ req.params.question_id + '/answer/' + answer.answer_id,
+                    answerUrl: '/question/'+ req.params.question_id + '/answer/' + answer._id,
                     content: answer.answer,
                     upNum: 0,
-                    date: answer.date,
+                    date: dateFormat(answer.date),
                     bestAnswer: false,
                     bio: userInfo.bio,
                     name: userInfo.name,
@@ -242,7 +244,7 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
         // 用户没有登录
         return res.redirect('/');
     }
-    console.log('enter add question');
+    console.log('enter edit question');
     User.findById(req.session.user._id, function(err, user){
         if(err){
             console.error('find user id[' +  req.session.user._id + '] error!');
@@ -264,6 +266,53 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
         else{
             return res.status(200).json({"success": "success"});
         }
+    })
+})
+
+// 支持回答
+router.post('/:question_id/answer/:answer_id/agree', function(req, res, next){
+    if(!req.session.user) {
+        // 用户没有登录
+        return res.redirect('/');
+    }
+
+    Answer.findById(req.params.answer_id).populate('lstActions').exec(function(err, answer){
+        if(err){
+            console.log('add answer_id to question error');
+            return res.status(200).json({"error": "error"});
+        }
+
+        for(var loop = 0; loop < answer.lstActions.length; loop++){
+            if(answer.lstActions[loop].userObjId == req.session.user._id){
+                AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: {isDisagree: false, isAgree: true}}, function(err, action){
+                    if(err){
+                        console.log('update action failed!');
+                    }
+                    answer.agreeNum ++;
+                    answer.save(function(err){
+                        console.log('update answer agree num error!');
+                    })
+                    return res.status(200).json({"agreed": true});
+                })
+            }
+        }
+
+        // 创建一个action记录
+        AnswerAction.create({
+            userObjId: req.session.user._id,
+            isAgree: true
+        }, function(err, action){
+            if(err){
+                console.log('create answer action error:' + err);
+            }
+
+            answer.agreeNum++;
+            answer.lstActions.push(action._id);
+            answer.save(function(err){
+                console.log('update answer agree num error!');
+            })
+            return res.status(200).json({"agreed": true});
+        });
     })
 })
 

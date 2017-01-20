@@ -7,7 +7,7 @@ bestAnswer      最佳答题者
 content         回答内容
 profileUrl      头像路径
 date            回答时间
-upNum           支持数目
+agreeNum        支持数目
 answerOwner     我的答案
 */%>
 <% if(!answerOwner){ %>
@@ -16,19 +16,25 @@ answerOwner     我的答案
 <div class="zm-item-answer zm-item-expanded zm-item-answer-owner">
 <% } %>
     <link itemprop="url" href="<%= answerUrl %>">
+<% if(answerOwner){ %>
+    <div class="zm-item-vote">
+        <a class="zm-item-vote-count js-vote-count" href="javascript:;"><%= agreeNum %></a>
+    </div>
+<% }else{ %>
     <div class="zm-votebar">
-        <% if(0){ %>
+    <% if(0){ %>
         <button class="up pressed" title="赞同">
-        <% }else{ %>
+    <% }else{ %>
         <button class="up" title="赞同">
-        <% } %>
+    <% } %>
             <i class="icon vote-arrow"></i>
-            <span class="count"><%= upNum %></span>
+            <span class="count"><%= agreeNum %></span>
         </button>
         <button class="down" title="反对，不会显示您的姓名">
             <i class="icon vote-arrow"></i>
         </button>
     </div>
+<% } %>
     <div class="answer-head">
         <div class="zm-item-answer-author-info">
             <a class="zm-item-link-avatar">
@@ -49,7 +55,7 @@ answerOwner     我的答案
         <div class="zm-item-vote-info">
             <span class="voters text">
                 <a href="#" class="more text">
-                    <span class="js-voteCount"><%= upNum %></span>&nbsp;个赞同
+                    <span class="js-voteCount"><%= agreeNum %></span>&nbsp;个赞同
                 </a>
             </span>
         </div>
@@ -71,7 +77,7 @@ answerOwner     我的答案
     </div>
     <div class="zm-item-meta answer-action">
         <div class="zm-meta-panel">
-            <a class="answer-date-link meta-item"><%= date %></a>
+            <a class="answer-date-link meta-item">发布于 <%= date %></a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
 <% if(!answerOwner){ %>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>

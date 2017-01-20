@@ -517,6 +517,9 @@ a.zu-top-profile-name:hover{
 .zm-item-expanded .zm-item-vote{
     display: none;
 }
+.zm-item-answer-owner .zm-item-vote{
+    display: block !important;
+}
 .zm-votebar{
     display: none;
     float: left;
