@@ -35,7 +35,7 @@ router.get('/:id', function(req, res, next) {
 
                 for(var loop = 0; loop < answers.length; loop++){
                     var promise = new Promise(function(resolve, reject){
-                        Answer.findById(answers[loop], function(err, answer){
+                        Answer.findById(answers[loop]).populate('lstActions').exec(function(err, answer){
                             if(err){
                                 reject('');
                             }
@@ -48,11 +48,26 @@ router.get('/:id', function(req, res, next) {
                                         if(!answered && answer.userObjId == req.session.user._id){
                                             answered = true;
                                         }
+                                        var agree = false,
+                                            disAgree = false,
+                                            thanks = false;
+                                        for(var loop = 0; loop < answer.lstActions.length; loop++){
+                                            if(answer.lstActions[loop].userObjId == req.session.user._id){
+                                                // 对次答案有操作
+                                                agree = answer.lstActions[loop].isAgree;
+                                                disAgree = answer.lstActions[loop].isDisagree;
+                                                thanks = answer.lstActions[loop].isThanks;
+                                                console.log('disagree:' + disAgree + 'agree:' + agree);
+                                            }
+                                        }
                                         resolve({
                                             content: answer.answer,
                                             agreeNum: answer.agreeNum,
                                             date: dateFormat(answer.date),
                                             answer_id: answer._id,
+                                            agree: agree,
+                                            disAgree: disAgree,
+                                            thanks: thanks,
                                             user: {
                                                 _id: user._id,
                                                 name: user.name,
@@ -225,7 +240,10 @@ router.post('/:question_id/answer', function(req, res, next){
             ejs.renderFile('views/components/oneanswer.ejs', {
                     answerUrl: '/question/'+ req.params.question_id + '/answer/' + answer._id,
                     content: answer.answer,
-                    upNum: 0,
+                    agreeNum: 0,
+                    agree: false,
+                    disagree: false,
+                    thanks: false,
                     date: dateFormat(answer.date),
                     bestAnswer: false,
                     bio: userInfo.bio,
@@ -270,87 +288,150 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
 })
 
 // 支持回答
-router.post('/:question_id/answer/:answer_id/agree', function(req, res, next){
+router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录
         return res.redirect('/');
     }
+    console.log('enter answer action:' + req.params.action);
+    var update,
+        num;
+    if(req.params.action == 'agree') {
+        update = {
+            isAgree: true,
+            isDisagree: false,
+            isThanks: false
+        };
+        num = 1;
+    }
+    else if(req.params.action == 'cancelAgree'){
+        update = {
+            isAgree: false,
+            isDisagree: false,
+            isThanks: false
+        };
+        num = -1;
+    }
+    else if(req.params.action == 'disagree'){
+        update = {
+            isAgree: false,
+            isDisagree: true,
+            isThanks: false
+        };
+        num = 0;    // 回答的赞同数时候减少这里无法判断，需要看是否点过赞同
+    }
+    else if(req.params.action == 'cancelDisagree'){
+        update = {
+            isAgree: false,
+            isDisagree: false,
+            isThanks: false
+        };
+        num = 0;
+    }
+    else if(req.params.action == 'thanks'){
+        update = {
+            isThanks: true
+        };
+        num = 0;    // 回答的赞同数时候减少这里无法判断，需要看是否点过赞同
+    }
+    else if(req.params.action == 'cancelThanks'){
+        update = {
+            isThanks: false
+        };
+        num = 0;
+    }
+    else if(req.params.action == 'delete'){
+        Answer.findById(req.params.answer_id).populate('userObjId').exec(function(err, answer){
+            if(err){
+                console.log('add answer_id to question error');
+                return res.status(200).json({"error": "error"});
+            }
+            if(answer.userObjId._id != req.session.user._id){
+                return res.status(200).json({"error": "u are not author!"});
+            }
+            for(var loop = 0; loop < answer.lstActions.length; loop++){
+                AnswerAction.remove({_id: answer.lstActions[loop]}, function(err){
+                    console.log('remove table action failed' + err);
+                })
+            }
+            Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
+                if(err){
+                    console.log('update question error');
+                    return res.status(200).json({"error": "u are not author!"});
+                }
+                answer.remove(function(err){
+                    if(err){
+                        console.log('update question error');
+                        return res.status(200).json({"error": "u are not author!"});
+                    }
 
+                    fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
+                        var html = ejs.render(data.toString(), {
+                            "name": answer.userObjId.name,
+                            "profileUrl": answer.userObjId.profileUrl || "/images/system/profile_s.jpg"});
+
+                        return res.status(200).json({"answerEditWrap": html});
+                    });
+                });
+            })
+        })
+        return;  // 不能往下走
+    }
+
+    var found = false;
     Answer.findById(req.params.answer_id).populate('lstActions').exec(function(err, answer){
         if(err){
             console.log('add answer_id to question error');
             return res.status(200).json({"error": "error"});
         }
-
         for(var loop = 0; loop < answer.lstActions.length; loop++){
             if(answer.lstActions[loop].userObjId == req.session.user._id){
-                AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: {isDisagree: false, isAgree: true}}, function(err, action){
+                found = true;
+                if(req.params.action == 'disagree' && answer.lstActions[loop].isAgree){
+                    num = -1;
+                }
+                console.log(update);
+                AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: update}, function(err, action){
                     if(err){
                         console.log('update action failed!');
                     }
-                    answer.agreeNum ++;
-                    answer.save(function(err){
-                        console.log('update answer agree num error!');
-                    })
-                    return res.status(200).json({"agreed": true});
+                    if(num != 0){
+                        answer.agreeNum += num;
+                        answer.save(function(err){
+                            if(err){
+                                console.log('update answer agree num error!');
+                            }
+                        })
+                    }
+                    return res.status(200).json({"agreed": "success"});
                 })
+                break; // no need loop
             }
         }
 
-        // 创建一个action记录
-        AnswerAction.create({
-            userObjId: req.session.user._id,
-            isAgree: true
-        }, function(err, action){
-            if(err){
-                console.log('create answer action error:' + err);
-            }
-
-            answer.agreeNum++;
-            answer.lstActions.push(action._id);
-            answer.save(function(err){
-                console.log('update answer agree num error!');
-            })
-            return res.status(200).json({"agreed": true});
-        });
-    })
-})
-
-// 删除回答
-router.post('/:question_id/answer/:answer_id/delete', function(req, res, next){
-    if(!req.session.user) {
-        // 用户没有登录
-        return res.redirect('/');
-    }
-
-    Answer.findById(req.params.answer_id).populate('userObjId').exec(function(err, answer){
-        if(err){
-            console.log('add answer_id to question error');
-            return res.status(200).json({"error": "error"});
-        }
-        if(answer.userObjId._id != req.session.user._id){
-            return res.status(200).json({"error": "u are not author!"});
-        }
-        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
-            if(err){
-                console.log('update question error');
-                return res.status(200).json({"error": "u are not author!"});
-            }
-            answer.remove(function(err){
+        if(!found){
+            // 创建一个action记录
+            AnswerAction.create({
+                userObjId: req.session.user._id,
+                isAgree: update.isAgree || false,
+                isDisagree: update.isDisagree || false,
+                isThanks: update.isThanks || false
+            }, function(err, action){
                 if(err){
-                    console.log('update question error');
-                    return res.status(200).json({"error": "u are not author!"});
+                    console.log('create answer action error:' + err);
                 }
-
-                fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
-                    var html = ejs.render(data.toString(), {
-                        "name": answer.userObjId.name,
-                        "profileUrl": answer.userObjId.profileUrl || "/images/system/profile_s.jpg"});
-
-                    return res.status(200).json({"answerEditWrap": html});
-                });
+                else{
+                    answer.agreeNum += num;
+                    answer.lstActions.push(action._id);
+                    answer.save(function(err){
+                        if(err){
+                            console.log('update answer agree num error!');
+                        }
+                        return res.status(200).json({"agreed": true});
+                    })
+                }
             });
-        })
+        }
     })
 })
 

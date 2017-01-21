@@ -52,7 +52,7 @@ var answerSchema = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     answer: String,
     date: { type: Date, default: Date.now },
-    lstActions: [{type: mongoose.Schema.Types.ObjectId, ref: 'answerAction'}],
+    lstActions: [{type: mongoose.Schema.Types.ObjectId, ref: 'AnswerAction'}],
     agreeNum: {type: Number, default: 0}
 });
 exports.Answer = mongoose.model('Answer', answerSchema);
@@ -66,7 +66,7 @@ exports.Answer = mongoose.model('Answer', answerSchema);
 var answerActionSchema = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, unique: true, ref: 'User'},
     isAgree: {type: Boolean, default: false},
-    isDisAgree: {type: Boolean, default: false},
+    isDisagree: {type: Boolean, default: false},
     isThanks: {type: Boolean, default: false}
 });
 exports.AnswerAction = mongoose.model('AnswerAction', answerActionSchema);

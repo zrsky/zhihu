@@ -9,48 +9,107 @@ function stopProp(event){
 }
 /* commonFunction end */
 
-// 答案支持，反对
-$('.zm-votebar').each(function () {
-    // 支持
-    $(this).children('button:first').click(function () {
-        var upClass = $(this).attr('class');
-        var downClass = $(this).next().attr('class');
-        var num = $(this).children('span').text();
-        if(upClass.indexOf('pressed') >= 0)
-        {
-            $(this).removeClass('pressed');
-            $(this).children('span').text(parseInt(num) - 1);
-        }
-        else{
-            $(this).addClass('pressed');
-            $(this).children('span').text(parseInt(num) + 1);
-        }
+// 赞同答案
+$('.zm-votebar button:first').click(function(){
+    var $upButton = $(this);
+    var $downButton = $(this).next();
+    var action = ($upButton.prop('class').indexOf('pressed') == -1) ? 'agree' : 'cancelAgree';     // 没有赞同则赞同，否则取消赞同
+    var answerUrl = $upButton.parents('.zm-item-answer').children('link').attr('href');
 
-        if(downClass.indexOf('pressed') >= 0)
-        {
-            $(this).next().removeClass('pressed');
+    $.ajax({
+        type: 'POST',
+        url: answerUrl + '/' + action,
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                if(action == 'agree'){
+                    $upButton.addClass('pressed');
+                    $upButton.children('.count').text(parseInt($upButton.children('.count').text()) + 1);
+                    if($downButton.hasClass('pressed')){
+                        $downButton.removeClass('pressed');
+                    }
+                }
+                else if(action == 'cancelAgree'){
+                    $upButton.removeClass('pressed');
+                    $upButton.children('.count').text(parseInt($upButton.children('.count').text()) - 1);
+                    if($downButton.hasClass('pressed')){
+                        $downButton.removeClass('pressed');
+                    }
+                }
+            }
+        },
+        error: function(data){
+            console.log(data);
+        }
+    })
+})
+// 反对答案
+$('.zm-votebar button:last').click(function(){
+    var $downButton = $(this);
+    var $upButton = $(this).prev();
+    var action = ($downButton.prop('class').indexOf('pressed') == -1) ? 'disagree' : 'cancelDisagree';
+    var answerUrl = $upButton.parents('.zm-item-answer').children('link').attr('href');
+
+    $.ajax({
+        type: 'POST',
+        url: answerUrl + '/' + action,
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                if(action == 'disagree'){
+                    $downButton.addClass('pressed');
+                    if($upButton.hasClass('pressed')){
+                        $upButton.children('.count').text(parseInt($upButton.children('.count').text()) - 1);
+                        $upButton.removeClass('pressed');
+                    }
+                }
+                else if(action == 'cancelDisagree'){
+                    $downButton.removeClass('pressed');
+                }
+            }
+        },
+        error: function(data){
+            console.log(data);
         }
     })
 
-    // 反对
-    $(this).children('button:last').click(function () {
-        var downClass = $(this).attr('class');
-        var upClass = $(this).prev().attr('class');
-        var num = $(this).prev().children('span').text();
-        if(downClass.indexOf('pressed') >= 0)
-        {
-            $(this).removeClass('pressed');
-        }
-        else{
-            $(this).addClass('pressed');
-        }
+})
 
-        if(upClass.indexOf('pressed') >= 0)
-        {
-            $(this).prev().removeClass('pressed');
-            $(this).prev().children('span').text(parseInt(num) - 1);
+// 感谢
+$('.js-thank').click(function(){
+    var html = $(this).html();
+    var action = (html.indexOf('取消感谢') > -1) ? 'cancelThanks' : 'thanks';
+    var answerUrl = $(this).parents('.zm-item-answer').children('link').attr('href');
+    var $this = $(this);
+
+    $.ajax({
+        type: 'POST',
+        url: answerUrl + '/' + action,
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log(data.error);
+            }
+            else{
+                if(action == 'thanks'){
+                    $this.html('<i class="z-icon-thank"></i>取消感谢');
+                }
+                else{
+                    $this.html('<i class="z-icon-thank"></i>感谢');
+                }
+            }
+        },
+        error: function(data){
+            console.log(data);
         }
     })
+
 })
 
 //// 评论赞，取消赞

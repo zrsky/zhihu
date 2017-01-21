@@ -8,6 +8,9 @@ content         回答内容
 profileUrl      头像路径
 date            回答时间
 agreeNum        支持数目
+agree           已支持
+disAgree        已反对
+thanks          已感谢
 answerOwner     我的答案
 */%>
 <% if(!answerOwner){ %>
@@ -22,15 +25,19 @@ answerOwner     我的答案
     </div>
 <% }else{ %>
     <div class="zm-votebar">
-    <% if(0){ %>
+<% if(agree){ %>
         <button class="up pressed" title="赞同">
-    <% }else{ %>
+<% }else{ %>
         <button class="up" title="赞同">
-    <% } %>
+<% } %>
             <i class="icon vote-arrow"></i>
             <span class="count"><%= agreeNum %></span>
         </button>
+<% if(disAgree){ %>
+        <button class="down pressed" title="反对，不会显示您的姓名">
+<% }else{ %>
         <button class="down" title="反对，不会显示您的姓名">
+<% } %>
             <i class="icon vote-arrow"></i>
         </button>
     </div>
@@ -80,7 +87,11 @@ answerOwner     我的答案
             <a class="answer-date-link meta-item">发布于 <%= date %></a>
             <a href="javascript:;" class="toggle-comment meta-item" num="4"><i class="z-icon-comment"></i>添加评论</a>
 <% if(!answerOwner){ %>
+<% if(thanks){ %>
+            <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>取消感谢</a>
+<%}else{%>
             <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
+<%}%>
 <% } %>
             <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
             <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
