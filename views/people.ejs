@@ -1,0 +1,304 @@
+<%/*
+ 个人页面模版
+ name               昵称
+ profileUrl         头像路径
+ */%>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title><%= name %> - 知乎</title>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
+<body class="zhi">
+    <%- include('components/zu-top.ejs', {name: name, profileUrl: profileUrl}) %>
+    <div class="zg-wrap zu-main clearFix" role="main">
+        <div class="zu-main-content">
+            <div class="zu-main-content-inner">
+                <div class="zm-profile-header ProfileCard">
+                    <div class="zm-profile-header-main">
+                        <div class="UserAvatarEditor ProfileHeader-avatar">
+                            <div class="UserAvatar">
+                                <img class="Avatar Avatar--l" src=<%= profileUrl %> alt="vczh">
+                            </div>
+                            <div class="Mask UserAvatarEditor-mask">
+                                <div class="Mask-mask Mask-mask--black UserAvatarEditor-maskInner"></div>
+                                <div class="Mask-content">
+                                    <svg viewBox="0 0 20 16" class="Icon UserAgatarEditor-cameraIcon Icon-camara" width="30" height="27">
+                                        <g><path d="M18.094 2H15s-1-2-2-2H7C6 0 5 2 5 2H2C0 2 0 3.967 0 3.967V14c0 2 2.036 2 2.036 2H17c3 0 3-1.983 3-1.983V4c0-2-1.906-2-1.906-2zM10 12c-1.933 0-3.5-1.567-3.5-3.5S8.067 5 10 5s3.5 1.567 3.5 3.5S11.933 12 10 12zm0 1.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm7.5-8c-.552 0-1-.448-1-1s.448-1 1-1 1 .448 1 1-.448 1-1 1z" fill-rule="evenodd"></path></g>
+                                    </svg>
+                                    <div class="UserAvatorEditor-maskInnerText">修改我的头像</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top">
+                            <div class="weibo-wrap">
+                                <a class="zm-profile-header-user-weibo" href="http://weibo.com/vczh">
+                                    <i class="zm-profile-header-icon sina"></i>
+                                </a>
+                            </div>
+                            <div class="title-section">
+                                <span class="name"><%= name %></span>
+                            </div>
+                            <div class="bio ellipsis" title="专业造轮子，拉黑抢前排。gaclib.net">
+                                专业造轮子，拉黑抢前排。
+                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
+                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
+                                    <i class="icon-external"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="zm-profile-header-info">
+                            <div class="zm-profile-header-user-describe">
+                                <div class="items">
+                                    <div class="item editable-group">
+                                        <i class="icon icon-profile-location"></i>
+                                        <span class="info-wrap">
+                                            <span class="location item">
+                                                <a href="javascript:;" class="topic-link">西雅图（Seattle）</a>
+                                            </span>
+                                            <span class="business item">
+                                                <a href="javascript:;" class="topic-link">计算机软件</a>
+                                            </span>
+                                            <span class="gender item">
+                                                <i class="icon icon-profile-male"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="item editable-group">
+                                        <i class="icon icon-profile-company"></i>
+                                        <span class="info-wrap">
+                                            <span class="employment item" title="Microsoft Office">
+                                                <a href="javascript:;" class="topic-link">Microsoft Office</a>
+                                            </span>
+                                            <span class="position item" title="Developer">
+                                                <a href="javascript:;" class="topic-link">Developer</a>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="item editable-group">
+                                        <i class="icon icon-profile-education"></i>
+                                        <span class="info-wrap">
+                                            <span class="education item" title="华南理工大学">
+                                                <a href="javascript:;" class="topic-link">华南理工大学</a>
+                                            </span>
+                                            <span class="education-extra item" title="软件学院">
+                                                <a href="javascript:;" class="topic-link">软件学院</a>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="item">
+                                        <a class="zm-profile-header-user-detail zg-link-litblue-normal">
+                                            <i class="icon zm-profile-header-icon"></i>
+                                            <span>查看详细资料</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="zm-profile-header-describe editable-group">
+                                    <span class="info-wrap fold-wrap fold">
+                                        <span class="description unfold-itme">
+                                            <span class="content">
+                                                长期开发跨越三大PC平台的GUI库<br>
+                                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
+                                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
+                                                    <i class="icon-external"></i>
+                                                </a>
+                                                ，讨论QQ群：231200072（不闲聊）<br>
+                                                不再更新的技术博客：
+                                                <a href="//link.zhihu.com/?target=http://www.cppblog.com/vczh" class="external">
+                                                    <span class="invisible">http://</span><span class="visible">cppblog.com/vczh</span>
+                                                    <i class="icon-external"></i>
+                                                </a>
+                                            </span>
+                                            <a href="javascript:;" name="fold" class="fold collapse meta-item">
+                                                <i class="z-icon-fold"></i>收起
+                                            </a>
+                                        </span>
+                                        <span class="fold-item hidden">
+                                            <span class="content">
+                                                长期开发跨越三大PC平台的GUI库<br>
+                                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
+                                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
+                                                    <i class="icon-external"></i>
+                                                </a>
+                                                ，讨论QQ群：231200072（不闲聊）
+                                            </span>
+                                            <a href="javascript:;" class="unfold zg-link-litblue-normal">显示全部 »</a>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="zm-profile-header-marked">
+                        <i class="sprite-global-icom-marked"></i>
+                        被编辑推荐收录了
+                        <a class="zg-link-litblue-normal" href="javascript:;">4 个回答</a>
+                    </div>
+                    <div class="zm-profile-header-operation clearFix">
+                        <div class="zm-profile-header-info-list">
+                            <span class="zm-profile-header-info-title">获得</span>
+                            <span class="zm-profile-header-user-agree">
+                                <span class="zm-profile-header-icon"></span>
+                                <strong>8240848</strong>赞同
+                            </span>
+                            <span class="zm-profile-header-user-thanks">
+                                <span class="zm-profile-header-icon"></span>
+                                <strong>109889</strong>感谢
+                            </span>
+                        </div>
+                        <div class="zm-profile-header-op-btn">
+                            <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn">取消关注</button>
+                            <a href="/inbox/1001" class="zg-btn-white zm-profile-header-pm-btn" id="zm-profile-header-pm-btn">
+                                <i class="zg-icon">私信</i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="profile-navbar clearFix">
+                        <a class="item home first active" href="/people/excited-vczh">
+                            <i class="icon icon-profile-tab-home"></i>
+                            <span class="hide-text">主页</span>
+                        </a>
+                        <a class="item" href="/people/excited-vczh/asks">
+                            提问
+                            <span class="num">438</span>
+                        </a>
+                        <a class="item" href="/people/excited-vczh/answers">
+                            回答
+                            <span class="num">12449</span>
+                        </a>
+                        <a class="item" href="/people/excited-vczh/posts">
+                            文章
+                            <span class="num">41</span>
+                        </a>
+                        <a class="item" href="/people/excited-vczh/collections">
+                            收藏
+                            <span class="num">1</span>
+                        </a>
+                        <a class="item" href="/people/excited-vczh/logs">
+                            公共编辑
+                            <span class="num">2026</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="zm-profile-section-wrap">
+                    <div class="zm-profile-section-head">
+                        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
+                            <h2 class="zm-profile-section-name">回答</h2>
+                            <i class="zg-right zg-icon zm-profile-section-more-btn"></i>
+                        </a>
+                    </div>
+                    <div class="zm-profile-section-list" id="zh-profile-answers-inner-list">
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">38</div>
+                                <div class="zm-profile-vote-type">赞同</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">工程师文化对企业一定是好的么？</a>
+                                </h2>
+                                <p class="zm-profile-item-text">工程师文化的意思就是说，码农门锁在一个房间里，互相不用照顾别人的感受，好好写代…</p>
+                            </div>
+                        </div>
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">23</div>
+                                <div class="zm-profile-vote-type">赞同</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">这张图的问题是什么意思？</a>
+                                </h2>
+                                <p class="zm-profile-item-text">粗略看了一下，虽然没有全部看懂，但大概是这个意思： 孟德尔定律：啪啪啪 平面几何…</p>
+                            </div>
+                        </div>
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">22</div>
+                                <div class="zm-profile-vote-type">赞同</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">当中国被多国联合入侵，那些移民的华人华侨还会愿意像二战时的先辈一样回国援战吗？</a>
+                                </h2>
+                                <p class="zm-profile-item-text">只要我国答应永不清算，战后供着。 想想现在的那么多老兵</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zm-profile-section-wrap zg-profile-ask-wrap">
+                    <div class="zm-profile-section-head">
+                        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
+                            <h2 class="zm-profile-section-name">提问</h2>
+                            <i class="zg-right zg-icon zm-profile-section-more-btn"></i>
+                        </a>
+                    </div>
+                    <div class="zm-profile-section-list" id="zh-profile-ask-inner-list">
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">91K</div>
+                                <div class="zm-profile-vote-type">浏览</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">为什么阿里抢占线下生意和订购火车票的时候，很多非程序员就一片叫好，而对月饼事件的态度就截然相反？</a>
+                                </h2>
+                                <div class="meta zg-gray">
+                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
+                                    <span class="zg-bull">•</span>
+                                    133 个回答
+                                    <span class="zg-bull">•</span>
+                                    488 个关注
+                                </div>
+                            </div>
+                        </div>
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">89K</div>
+                                <div class="zm-profile-vote-type">浏览</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">如何评价 2016 年 8 月 Steam 平台 Windows 10 市场份额已近49%？</a>
+                                </h2>
+                                <div class="meta zg-gray">
+                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
+                                    <span class="zg-bull">•</span>
+                                    88 个回答
+                                    <span class="zg-bull">•</span>
+                                    316 个关注
+                                </div>
+                            </div>
+                        </div>
+                        <div class="zm-profile-section-item">
+                            <div class="zm-profile-vote-count">
+                                <div class="zm-profile-vote-num">788</div>
+                                <div class="zm-profile-vote-type">浏览</div>
+                            </div>
+                            <div class="zm-profile-section-main">
+                                <h2 class="zm-profile-question">
+                                    <a class="question_link" href="question.html">如何评价《又停了一個項目：傳谷歌暫停Project Ara模組手機項目》？</a>
+                                </h2>
+                                <div class="meta zg-gray">
+                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
+                                    <span class="zg-bull">•</span>
+                                    7 个回答
+                                    <span class="zg-bull">•</span>
+                                    17 个关注
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include components/people-sidebar.ejs %>
+    </div>
+    <%- include components/addQuestion %>
+    <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/ejs_production.js"></script>
+    <script type="text/javascript" src="/javascripts/main.js"></script>
+    <div></div>
+</body>
+</html>

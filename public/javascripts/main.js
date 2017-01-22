@@ -540,3 +540,5 @@ $('#mock').focus(function () {
 $('#mock').blur(function () {
     $(this).parent().removeClass('zm-editable-editor-field-active');
 })
+
+// hover出现修改头像
