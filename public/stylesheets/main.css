@@ -434,7 +434,58 @@ a.zu-top-profile-name:hover{
     margin: 0 328px 0 0;
 }
 .zm-profile-header-main{
+    position: relative;
     padding: 12px 18px;
+}
+.Mask-hidden{
+    pointer-events: none;
+    opacity: 0;
+}
+.zm-profile-header-main .Mask{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-transition: opacity .2s ease-in;
+    transition: opacity .2s ease-in;
+}
+.Mask-mask--black{
+    background: #000;
+}
+.Mask-mask{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: .4;
+    box-sizing: border-box;
+}
+.Mask-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    color: #fff;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.UserAgatarEditor-cameraIcon{
+    fill: #fff;
+}
+.UserAvatorEditor-maskInnerText{
+    white-space: nowrap;
+}
+.ProfileHeader-avatar{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.UserAvatar, .UserAvatar-inner{
+    vertical-align: bottom;
 }
 .zg-section{
     margin: 0 0 10px;
@@ -1603,9 +1654,6 @@ a:hover .zg-icon-comment-report{
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 1px 0 #f2f4f5;
-}
-.zm-profile-header .Avatar{
-    float: left;
 }
 .Avatar--l{
     width: 100px; height: 100px;

@@ -19,9 +19,9 @@
                     <div class="zm-profile-header-main">
                         <div class="UserAvatarEditor ProfileHeader-avatar">
                             <div class="UserAvatar">
-                                <img class="Avatar Avatar--l" src=<%= profileUrl %> alt="vczh">
+                                <img class="Avatar Avatar--l UserAvatar-inner" src=<%= profileUrl %> alt=<%= name %>>
                             </div>
-                            <div class="Mask UserAvatarEditor-mask">
+                            <div class="Mask UserAvatarEditor-mask Mask-hidden">
                                 <div class="Mask-mask Mask-mask--black UserAvatarEditor-maskInner"></div>
                                 <div class="Mask-content">
                                     <svg viewBox="0 0 20 16" class="Icon UserAgatarEditor-cameraIcon Icon-camara" width="30" height="27">
@@ -30,6 +30,7 @@
                                     <div class="UserAvatorEditor-maskInnerText">修改我的头像</div>
                                 </div>
                             </div>
+                            <input type="file" accept="image/png, image/jpeg" style="display: none">
                         </div>
                         <div class="top">
                             <div class="weibo-wrap">

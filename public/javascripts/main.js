@@ -532,7 +532,6 @@ $('button.follow-button').click(function(){
     })
 })
 
-
 // 输入回答时高亮
 $('#mock').focus(function () {
     $(this).parent().addClass('zm-editable-editor-field-active');
@@ -542,3 +541,24 @@ $('#mock').blur(function () {
 })
 
 // hover出现修改头像
+$('.UserAvatarEditor').mouseover(function(){
+    $(this).children('.UserAvatarEditor-mask').removeClass('Mask-hidden');
+})
+$('.UserAvatarEditor').mouseout(function(){
+    $(this).children('.UserAvatarEditor-mask').addClass('Mask-hidden');
+})
+
+$('.UserAvatarEditor-mask').click(function(){
+    var value = $('input[type="file"]').click();
+
+})
+
+$('input[type="file"]').on('change', function(){
+
+    var files = $(this).get(0).files;
+
+    if (files.length > 0){
+        console.log(files);
+    }
+
+});
