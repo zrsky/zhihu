@@ -8,10 +8,12 @@ var validatemobile = require('../lib/commFunc').validatemobile;
 /* GET home page. */
 router.get('/', function(req, res, next) {
     if(req.session.user){
-        res.render('main', {user: {
-            name: req.session.user.name,
-            profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
-        }});
+        res.render('main', {
+            myself:{
+                name: req.session.user.name,
+                profileUrl: req.session.user.profileUrl,
+                _id: req.session.user._id}
+        });
     }
     else{
         // 之前没有登录过，返回登录页面

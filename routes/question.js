@@ -287,7 +287,7 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
     })
 })
 
-// 支持回答
+// 支持，反对，感谢，删除回答
 router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
     if(!req.session.user) {
         // 用户没有登录

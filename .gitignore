@@ -3,6 +3,12 @@ logs
 *.log
 npm-debug.log*
 
+# tmp
+tmp
+
+# userinfo
+users
+
 # Runtime data
 pids
 *.pid

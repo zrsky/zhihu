@@ -2,6 +2,7 @@
 顶部蓝条
 name            昵称
 profileUrl      头像url
+_id             唯一id
 */%>
 <div class="zu-top">
     <div class="zg-warp clearfix">
@@ -31,14 +32,14 @@ profileUrl      头像url
             </ul>
         </div>
         <div class="zu-top-profile">
-            <a href="people/morning" class="zu-top-profile-name">
-                <span class="name"><%= name %></span>
-                <img class="avatar" src=<%= profileUrl %> alt="蒋晨光">
+            <a href="people/<%= myself._id %>" class="zu-top-profile-name">
+                <span class="name"><%= myself.name %></span>
+                <img class="avatar" src=<%= myself.profileUrl %> alt=<%= myself.name %>>
                 <span class="zu-top-pm-count zg-noti-number">1</span>
             </a>
             <ul class="top-nav-dropDown">
                 <li>
-                    <a href="/people/morning/"><i class="zg-icon zg-icon-home"></i>我的主页</a>
+                    <a href="/people/<%= myself._id %>" ><i class="zg-icon zg-icon-home"></i>我的主页</a>
                 </li>
                 <li>
                     <a href="/inbox"><i class="zg-icon zg-icon-pm"></i>私信</a>

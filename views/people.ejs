@@ -1,5 +1,7 @@
 <%/*
  个人页面模版
+ myself             自己属性
+ isMyself           是否自己的页面
  name               昵称
  profileUrl         头像路径
  */%>
@@ -11,12 +13,13 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <%- include('components/zu-top.ejs', {name: name, profileUrl: profileUrl}) %>
+    <%- include('components/zu-top.ejs', {myself: myself}) %>
     <div class="zg-wrap zu-main clearFix" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">
                 <div class="zm-profile-header ProfileCard">
                     <div class="zm-profile-header-main">
+<% if(isMyself){ %>
                         <div class="UserAvatarEditor ProfileHeader-avatar">
                             <div class="UserAvatar">
                                 <img class="Avatar Avatar--l UserAvatar-inner" src=<%= profileUrl %> alt=<%= name %>>
@@ -30,8 +33,16 @@
                                     <div class="UserAvatorEditor-maskInnerText">修改我的头像</div>
                                 </div>
                             </div>
-                            <input type="file" accept="image/png, image/jpeg" style="display: none">
+                            <input id="upload-input" type="file" name="uploads[]" accept="image/png, image/jpeg" style="display: none">
                         </div>
+<% }else{ %>
+                        <div class="UserAvatarEditor ProfileHeader-avatar">
+                            <div class="UserAvatar">
+                                <img class="Avatar Avatar--l UserAvatar-inner" src=<%= profileUrl %> alt=<%= name %>>
+                            </div>
+                        </div>
+<% } %>
+
                         <div class="top">
                             <div class="weibo-wrap">
                                 <a class="zm-profile-header-user-weibo" href="http://weibo.com/vczh">

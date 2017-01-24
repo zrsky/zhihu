@@ -558,7 +558,25 @@ $('input[type="file"]').on('change', function(){
     var files = $(this).get(0).files;
 
     if (files.length > 0){
-        console.log(files);
-    }
+        var formData = new FormData();
+        for(var loop = 0; loop < files.length; loop++){
+            var file = files[loop];
 
+            formData.append('uploads[]', file, file.name);
+        }
+    }
+    $.ajax({
+        url: '/people/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data){
+            $('img.UserAvatar-inner').prop('src', data.profileUrl);
+            $('.zu-top-profile img.avatar').prop('src', data.profileUrl);
+        },
+        error: function(){
+            console.log('upload error!');
+        }
+    })
 });
