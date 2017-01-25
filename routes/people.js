@@ -12,9 +12,19 @@ router.get('/:user_id', function(req, res, next) {
     }
     // todo: 没有user_id转到404
 
-    User.findById(req.params.user_id, function(err, user){
+    User.findById(req.params.user_id).populate('lstQuestion').exec(function(err, user){
         if(err){
             return res.status(200).json({"error": "不存在的用户！"});
+        }
+        var latestQuestions = [];
+        for(var loop = 0; loop < user.lstQuestion.length; loop++){
+            // todo: 取最新的3个
+            latestQuestions.push({
+                title: user.lstQuestion[loop].title,
+                viewNum: user.lstQuestion[loop].viewNum,
+                answerNum: user.lstQuestion[loop].lstAnswer.length,
+                followNum: user.lstQuestion[loop].lstFollower.length
+            })
         }
 
         res.render('people', {
@@ -25,7 +35,9 @@ router.get('/:user_id', function(req, res, next) {
                 _id: req.session.user._id
             },
             name: user.name,
-            profileUrl: user.profileUrl
+            profileUrl: user.profileUrl,
+            latestQuestions: latestQuestions,
+            questionNum: user.lstQuestion.length
         });
     })
 });
@@ -78,12 +90,7 @@ router.post('/upload', function(req, res, next){
         console.log('An error occured:' + err);
     })
 
-    //form.on('end', function(){
-    //    return res.status(200).json({"profileUrl": "test"});
-    //})
-
     form.parse(req);
-
 })
 
 module.exports = router;

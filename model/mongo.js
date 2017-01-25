@@ -9,6 +9,8 @@ var mongoose = require('mongoose');
 * password          登录密码-sha1加密
 * lstQuestion       所有提过的问题"_id"列表
 * lstAnswers        所有的回答"_id"列表
+* lstFollower       关注者"_id"列表
+* viewNum           被浏览次数
 * */
 var userSchema = mongoose.Schema({
     name: {type: String, unique: true},
@@ -17,8 +19,10 @@ var userSchema = mongoose.Schema({
     profileUrl: {type: String, default: '/images/system/profile_l.jpg'},
     account: {type: String, unique: true},
     password: String,
-    lstQuestion: [String],
-    lstAnswer: [String]
+    lstQuestion: [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}],
+    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],    // todo:未实现
+    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    viewNum: {type: Number, default: 0}
 });
 exports.User = mongoose.model('User', userSchema);
 
@@ -28,7 +32,7 @@ exports.User = mongoose.model('User', userSchema);
  * date             创建时间
  * title            问题
  * lstAnswer        问题所有答案"_id"列表
- * lstFollower      关注着"_id"列表
+ * lstFollower      关注者"_id"列表
  * viewNum          被浏览次数
  * */
 var questionSchema = mongoose.Schema({

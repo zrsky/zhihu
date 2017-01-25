@@ -98,9 +98,10 @@ router.get('/:id', function(req, res, next) {
                     }
 
                     return res.render('question', {
-                        user: {
+                        myself:{
                             name: req.session.user.name,
-                            profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg'
+                            profileUrl: req.session.user.profileUrl,
+                            _id: req.session.user._id
                         },
                         answered: answered,
                         question_id: req.params.id,

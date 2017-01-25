@@ -11,7 +11,7 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <%- include('components/zu-top.ejs', {name: user.name, profileUrl: user.profileUrl}) %>
+    <%- include('components/zu-top.ejs', {myself: myself}) %>
     <div class="zg-wrap zu-main clearFix" data-url="<%= question_id %>" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">

@@ -1,0 +1,36 @@
+<%/* 个人页面-提问模块 模版
+ title              问题
+ viewNum            浏览次数
+ answerNum          回答数
+ followNum          关注数
+*/%>
+<div class="zm-profile-section-wrap zg-profile-ask-wrap">
+    <div class="zm-profile-section-head">
+        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
+            <h2 class="zm-profile-section-name">提问</h2>
+            <i class="zg-right zg-icon zm-profile-section-more-btn"></i>
+        </a>
+    </div>
+    <div class="zm-profile-section-list" id="zh-profile-ask-inner-list">
+<% questions.forEach(function(question){ %>
+        <div class="zm-profile-section-item">
+            <div class="zm-profile-vote-count">
+                <div class="zm-profile-vote-num"><%= question.viewNum %></div>
+                <div class="zm-profile-vote-type">浏览</div>
+            </div>
+            <div class="zm-profile-section-main">
+                <h2 class="zm-profile-question">
+                    <a class="question_link" href="question.html"><%= question.title %></a>
+                </h2>
+                <div class="meta zg-gray">
+                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
+                    <span class="zg-bull">•</span>
+                    <%= question.answerNum %> 个回答
+                    <span class="zg-bull">•</span>
+                    <%= question.followNum %> 个关注
+                </div>
+            </div>
+        </div>
+<% }) %>
+    </div>
+</div>

@@ -4,6 +4,10 @@
  isMyself           是否自己的页面
  name               昵称
  profileUrl         头像路径
+ latestQuestions    最新的提问
+ questionNum        总提问数
+ latestAnswers      最近的回答
+ answerNum          总回答数
  */%>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -159,12 +163,14 @@
                                 <strong>109889</strong>感谢
                             </span>
                         </div>
+<% if(!isMyself){ %>
                         <div class="zm-profile-header-op-btn">
                             <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn">取消关注</button>
                             <a href="/inbox/1001" class="zg-btn-white zm-profile-header-pm-btn" id="zm-profile-header-pm-btn">
                                 <i class="zg-icon">私信</i>
                             </a>
                         </div>
+<% } %>
                     </div>
                     <div class="profile-navbar clearFix">
                         <a class="item home first active" href="/people/excited-vczh">
@@ -173,7 +179,7 @@
                         </a>
                         <a class="item" href="/people/excited-vczh/asks">
                             提问
-                            <span class="num">438</span>
+                            <span class="num"><%= questionNum %></span>
                         </a>
                         <a class="item" href="/people/excited-vczh/answers">
                             回答
@@ -181,128 +187,20 @@
                         </a>
                         <a class="item" href="/people/excited-vczh/posts">
                             文章
-                            <span class="num">41</span>
+                            <span class="num">0</span>
                         </a>
                         <a class="item" href="/people/excited-vczh/collections">
                             收藏
-                            <span class="num">1</span>
+                            <span class="num">0</span>
                         </a>
                         <a class="item" href="/people/excited-vczh/logs">
                             公共编辑
-                            <span class="num">2026</span>
+                            <span class="num">0</span>
                         </a>
                     </div>
                 </div>
-                <div class="zm-profile-section-wrap">
-                    <div class="zm-profile-section-head">
-                        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
-                            <h2 class="zm-profile-section-name">回答</h2>
-                            <i class="zg-right zg-icon zm-profile-section-more-btn"></i>
-                        </a>
-                    </div>
-                    <div class="zm-profile-section-list" id="zh-profile-answers-inner-list">
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">38</div>
-                                <div class="zm-profile-vote-type">赞同</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">工程师文化对企业一定是好的么？</a>
-                                </h2>
-                                <p class="zm-profile-item-text">工程师文化的意思就是说，码农门锁在一个房间里，互相不用照顾别人的感受，好好写代…</p>
-                            </div>
-                        </div>
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">23</div>
-                                <div class="zm-profile-vote-type">赞同</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">这张图的问题是什么意思？</a>
-                                </h2>
-                                <p class="zm-profile-item-text">粗略看了一下，虽然没有全部看懂，但大概是这个意思： 孟德尔定律：啪啪啪 平面几何…</p>
-                            </div>
-                        </div>
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">22</div>
-                                <div class="zm-profile-vote-type">赞同</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">当中国被多国联合入侵，那些移民的华人华侨还会愿意像二战时的先辈一样回国援战吗？</a>
-                                </h2>
-                                <p class="zm-profile-item-text">只要我国答应永不清算，战后供着。 想想现在的那么多老兵</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="zm-profile-section-wrap zg-profile-ask-wrap">
-                    <div class="zm-profile-section-head">
-                        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
-                            <h2 class="zm-profile-section-name">提问</h2>
-                            <i class="zg-right zg-icon zm-profile-section-more-btn"></i>
-                        </a>
-                    </div>
-                    <div class="zm-profile-section-list" id="zh-profile-ask-inner-list">
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">91K</div>
-                                <div class="zm-profile-vote-type">浏览</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">为什么阿里抢占线下生意和订购火车票的时候，很多非程序员就一片叫好，而对月饼事件的态度就截然相反？</a>
-                                </h2>
-                                <div class="meta zg-gray">
-                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
-                                    <span class="zg-bull">•</span>
-                                    133 个回答
-                                    <span class="zg-bull">•</span>
-                                    488 个关注
-                                </div>
-                            </div>
-                        </div>
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">89K</div>
-                                <div class="zm-profile-vote-type">浏览</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">如何评价 2016 年 8 月 Steam 平台 Windows 10 市场份额已近49%？</a>
-                                </h2>
-                                <div class="meta zg-gray">
-                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
-                                    <span class="zg-bull">•</span>
-                                    88 个回答
-                                    <span class="zg-bull">•</span>
-                                    316 个关注
-                                </div>
-                            </div>
-                        </div>
-                        <div class="zm-profile-section-item">
-                            <div class="zm-profile-vote-count">
-                                <div class="zm-profile-vote-num">788</div>
-                                <div class="zm-profile-vote-type">浏览</div>
-                            </div>
-                            <div class="zm-profile-section-main">
-                                <h2 class="zm-profile-question">
-                                    <a class="question_link" href="question.html">如何评价《又停了一個項目：傳谷歌暫停Project Ara模組手機項目》？</a>
-                                </h2>
-                                <div class="meta zg-gray">
-                                    <a class="follow-link zg-follow meta-item" href="javascript:;"><i class="z-icon-follow"></i>关注问题</a>
-                                    <span class="zg-bull">•</span>
-                                    7 个回答
-                                    <span class="zg-bull">•</span>
-                                    17 个关注
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <%- include components/people-answer.ejs %>
+                <%- include('components/people-question.ejs', {questions: latestQuestions}) %>
             </div>
         </div>
         <%- include components/people-sidebar.ejs %>
