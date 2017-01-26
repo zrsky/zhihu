@@ -2,23 +2,20 @@ var express = require('express');
 var formidable = require('formidable');
 var router = express.Router();
 var fs = require('fs');
+var sha1 = require('sha1');
 var path = require('path');
-var User = require('../model/mongo').User;
+var userModel = require('../model/people');
+var validatemobile = require('../lib/commFunc').validatemobile;
 
-/* GET users listing. */
+// 个人页面
 router.get('/:user_id', function(req, res, next) {
     if(!req.session.user){
         return res.redirect('/');
     }
-    // todo: 没有user_id转到404
 
-    User.findById(req.params.user_id).populate('lstQuestion').exec(function(err, user){
-        if(err){
-            return res.status(200).json({"error": "不存在的用户！"});
-        }
+    userModel.getUserPage(req.params.user_id).then(function(user){
         var latestQuestions = [];
         for(var loop = 0; loop < user.lstQuestion.length; loop++){
-            // todo: 取最新的3个
             latestQuestions.push({
                 title: user.lstQuestion[loop].title,
                 viewNum: user.lstQuestion[loop].viewNum,
@@ -31,17 +28,18 @@ router.get('/:user_id', function(req, res, next) {
             isMyself: req.session.user._id == req.params.user_id,
             myself:{
                 name: req.session.user.name,
-                profileUrl: req.session.user.profileUrl,
+                profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg',
                 _id: req.session.user._id
             },
             name: user.name,
-            profileUrl: user.profileUrl,
+            profileUrl: user.profileUrl || '/images/system/profile_l.jpg',
             latestQuestions: latestQuestions,
             questionNum: user.lstQuestion.length
         });
-    })
+    }).catch(next);
 });
 
+// 更换头像
 router.post('/upload', function(req, res, next){
     if(!req.session.user){
         return res.redirect('/');
@@ -67,23 +65,16 @@ router.post('/upload', function(req, res, next){
         }
         fileName = new Date().getTime() + '.' + extName;
         fs.rename(file.path, path.join('./public/images/users/', req.session.user._id, fileName));
-        User.findById(req.session.user._id, function(err, user){
-            if(err){
-                console.log('find user error:' + err);
-                return res.status(200).json({"error": "内部错误！"});
+
+        var profileUrl = path.join('/images/users/', req.session.user._id, fileName);
+        var oldProfileUrl = req.session.user.profileUrl;
+        userModel.updateProfileUrl(req.session.user._id, profileUrl).then(function(user){
+            if(oldProfileUrl.length > 0){
+                fs.unlink('./public' + oldProfileUrl);
             }
-            var oldProfileUrl = user.profileUrl;
-            var profileUrl = path.join('/images/users/', req.session.user._id, fileName);
-            user.profileUrl = profileUrl;
-            user.save(function(err){
-                if(err){
-                    return res.status(200).json({"error": "内部错误！"});
-                }
-                fs.unlink('./public' + oldProfileUrl);      // 不关心是否失败
-                req.session.user.profileUrl = profileUrl;   // 更新session
-                return res.status(200).json({"profileUrl": profileUrl});
-            })
-        })
+            req.session.user.profileUrl = profileUrl;
+            return res.status(200).json({"profileUrl": profileUrl});
+        }).catch(next);
     })
 
     form.on('error', function(err){
@@ -91,6 +82,70 @@ router.post('/upload', function(req, res, next){
     })
 
     form.parse(req);
+})
+
+// 用户注册
+router.post('/register', function(req, res, next){
+    var name = req.body.name,
+        account = req.body.account,
+        password = req.body.password;
+
+    // 用"user._id"在users下为每个用户创建一个文件夹
+    function mkUserDir(dirname){
+        if(!fs.existsSync("public/images/users/" + dirname)){
+            fs.mkdirSync("public/images/users/" + dirname);
+        }
+        else{
+            // 文件夹已经存在了，一般不太可能
+            console.warn("dir:" + dirname + "is existed!");
+        }
+    }
+
+    if(!validatemobile(account)){
+        return res.status(200).json({phoneError: true});
+    }
+    else if(password.length < 6 || password.length > 22){
+        return res.status(200).json({pwdLenError: true});
+    }
+
+    var user = {
+        name: name,
+        account: account,
+        password: sha1(password)
+    };
+    userModel.createUser(user).then(function(user){
+        req.session.user = user;
+        mkUserDir(user._id);
+        return res.status(200).json({"url": "/"});
+    }).catch(function(e){
+        if(e.message.match('E11000 duplicate key')){
+            return res.status(200).json({accountExist: true});
+        }
+        return res.redirect('/');
+    });
+})
+
+router.post('/login', function(req, res, next){
+    var account = req.body.account,
+        password = req.body.password;
+
+    userModel.getUserByAccount(account).then(function(user){
+        if(!user){
+            return res.status(200).json({accountNotExist: true});
+        }
+        else if(sha1(password) != user.password){
+            return res.status(200).json({accountPwdError: true});
+        }
+        else{
+            req.session.user = user;
+            return res.status(200).json({"url": "/"});
+        }
+    })
+})
+
+router.post('/logout', function(req, res, next){
+    req.session.user = null;
+    return res.status(200).json({"url": "/"});
 })
 
 module.exports = router;

@@ -269,7 +269,7 @@ $('.toggle-comment').each(function () {
 $('ul.top-nav-dropDown').children().eq(3).click(function(){
     $.ajax({
         type: 'POST',
-        url: '/logout',
+        url: '/people/logout',
         dataType: 'JSON',
         success: function(data){
             console.log('log out success');

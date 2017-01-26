@@ -83,7 +83,7 @@
                     <a class="zg-btn-white zu-button-more">更多</a>
                 <% } %>
                 <% if(!answered){ %>
-                    <%- include('components/answer-edit-wrap-add.ejs', {name: user.name, profileUrl: user.profileUrl }) %>
+                    <%- include('components/answer-edit-wrap-add.ejs', {name: myself.name, profileUrl: myself.profileUrl }) %>
                 <% } %>
             </div>
         </div>

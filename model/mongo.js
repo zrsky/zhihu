@@ -16,12 +16,12 @@ var userSchema = mongoose.Schema({
     name: {type: String, unique: true},
     date: { type: Date, default: Date.now },
     bio: String,
-    profileUrl: {type: String, default: '/images/system/profile_l.jpg'},
+    profileUrl: String,
     account: {type: String, unique: true},
     password: String,
     lstQuestion: [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}],
-    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],    // todo:未实现
-    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],     // todo:未实现
+    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],     // todo:未实现
     viewNum: {type: Number, default: 0}
 });
 exports.User = mongoose.model('User', userSchema);
