@@ -12,115 +12,160 @@ var Question = require('../model/mongo').Question;
 var Answer = require('../model/mongo').Answer;
 var AnswerAction = require('../model/mongo').AnswerAction;
 var User = require('../model/mongo').User;
+var questionModel = require('../model/question');
 var fs = require('fs');
 var ejs = require('ejs');
 var dateFormat = require('../lib/commFunc.js').dateFormat;
 
 // 获取问题
 router.get('/:id', function(req, res, next) {
-    var answered = false;
-
-    if(req.session.user){
-        Question.findByIdAndUpdate(req.params.id, {$inc: {viewNum: 1}}, function(err, question){
-            if(err){
-                console.error('findbyid error! questionid[' +  req.params.id + ']');
-            }
-            if(question == null){
-                // 404 if question is null or undefined.
-                return next();
-            }
-            // 获取问题所有答案详细
-            function getAnswers(answers){
-                var promises = [];
-
-                for(var loop = 0; loop < answers.length; loop++){
-                    var promise = new Promise(function(resolve, reject){
-                        Answer.findById(answers[loop]).populate('lstActions').exec(function(err, answer){
-                            if(err){
-                                reject('');
-                            }
-                            else{
-                                User.findById(answer.userObjId, function(err, user){
-                                    if(err){
-                                        reject('');
-                                    }
-                                    else{
-                                        if(!answered && answer.userObjId == req.session.user._id){
-                                            answered = true;
-                                        }
-                                        var agree = false,
-                                            disAgree = false,
-                                            thanks = false;
-                                        for(var loop = 0; loop < answer.lstActions.length; loop++){
-                                            if(answer.lstActions[loop].userObjId == req.session.user._id){
-                                                // 对次答案有操作
-                                                agree = answer.lstActions[loop].isAgree;
-                                                disAgree = answer.lstActions[loop].isDisagree;
-                                                thanks = answer.lstActions[loop].isThanks;
-                                                console.log('disagree:' + disAgree + 'agree:' + agree);
-                                            }
-                                        }
-                                        resolve({
-                                            content: answer.answer,
-                                            agreeNum: answer.agreeNum,
-                                            date: dateFormat(answer.date),
-                                            answer_id: answer._id,
-                                            agree: agree,
-                                            disAgree: disAgree,
-                                            thanks: thanks,
-                                            user: {
-                                                _id: user._id,
-                                                name: user.name,
-                                                bio: user.bio,
-                                                goodAnswer: false,
-                                                answerOwner: req.session.user._id == user._id,
-                                                profileUrl: user.profileUrl || '/images/system/profile_s.jpg'
-                                            }
-                                        });
-                                    }
-                                })
-                            }
-                        })
-                    })
-                    promises.push(promise);
-                }
-                return promises;
-            }
-
-            Promise.all(getAnswers(question.lstAnswer)).then(function(datas){
-                Question.findOne({_id: req.params.id}).populate('lstFollower').exec(function(err, all){
-                    var followed = false;
-                    for(var loop = 0; loop < all.lstFollower.length; loop++){
-                        if(req.session.user._id == all.lstFollower[loop]._id){
-                            followed = true;
-                            break;
-                        }
-                    }
-
-                    return res.render('question', {
-                        myself:{
-                            name: req.session.user.name,
-                            profileUrl: req.session.user.profileUrl,
-                            _id: req.session.user._id
-                        },
-                        answered: answered,
-                        question_id: req.params.id,
-                        title: question.title,
-                        viewNum: question.viewNum,
-                        createDate: dateFormat(question.date),
-                        answers: datas,
-                        more: false,
-                        followed: followed,
-                        lstFollower: all.lstFollower,
-                        answerNum: 0
-                    });
-                });
-            })
-        })
-    }
-    else{
+    if(!req.session.user){
         return res.redirect('/');
     }
+
+    Promise.all([
+        questionModel.getQuestionPage(req.params.id),
+        questionModel.isAnswered(req.params.id, req.session.user._id)
+    ]).then(function(result){
+        var question = result[0];
+        var answered = result[1] ? true : false;
+        var latestAnswers = [];
+        for(var loop = 0; loop < question.lstAnswer.length; loop++){
+            latestAnswers.push({
+                content: question.lstAnswer[loop].answer,
+                agreeNum: question.lstAnswer[loop].agreeNum,
+                date: dateFormat(question.lstAnswer[loop].date),
+                answer_id: question.lstAnswer[loop]._id,
+                agree: false,
+                disAgree: false,
+                thanks: false,
+                author: {
+                    _id: question.lstAnswer[loop].userObjId._id,
+                    name: question.lstAnswer[loop].userObjId.name,
+                    bio: question.lstAnswer[loop].userObjId.bio,
+                    goodAnswer: false,
+                    answerOwner: req.session.user._id == question.lstAnswer[loop].userObjId._id,
+                    profileUrl: question.lstAnswer[loop].userObjId.profileUrl || '/images/system/profile_s.jpg'
+                }
+            })
+        }
+
+        return res.render('question', {
+            myself:{
+                name: req.session.user.name,
+                profileUrl: req.session.user.profileUrl || '/images/system/profile_l.jpg',
+                _id: req.session.user._id
+            },
+            answered: answered,
+            question_id: req.params.id,
+            title: question.title,
+            viewNum: question.viewNum,
+            createDate: dateFormat(question.date),
+            answers: latestAnswers,
+            more: false,
+            followed: false,
+            lstFollower: [],
+            answerNum: 0
+        });
+    })
+
+    //Question.findByIdAndUpdate(req.params.id, {$inc: {viewNum: 1}}, function(err, question){
+    //    if(err){
+    //        console.error('findbyid error! questionid[' +  req.params.id + ']');
+    //    }
+    //    if(question == null){
+    //        // 404 if question is null or undefined.
+    //        return next();
+    //    }
+    //    // 获取问题所有答案详细
+    //    function getAnswers(answers){
+    //        var promises = [];
+    //
+    //        for(var loop = 0; loop < answers.length; loop++){
+    //            var promise = new Promise(function(resolve, reject){
+    //                Answer.findById(answers[loop]).populate('lstActions').exec(function(err, answer){
+    //                    if(err){
+    //                        reject('');
+    //                    }
+    //                    else{
+    //                        User.findById(answer.userObjId, function(err, user){
+    //                            if(err){
+    //                                reject('');
+    //                            }
+    //                            else{
+    //                                if(!answered && answer.userObjId == req.session.user._id){
+    //                                    answered = true;
+    //                                }
+    //                                var agree = false,
+    //                                    disAgree = false,
+    //                                    thanks = false;
+    //                                for(var loop = 0; loop < answer.lstActions.length; loop++){
+    //                                    if(answer.lstActions[loop].userObjId == req.session.user._id){
+    //                                        // 对次答案有操作
+    //                                        agree = answer.lstActions[loop].isAgree;
+    //                                        disAgree = answer.lstActions[loop].isDisagree;
+    //                                        thanks = answer.lstActions[loop].isThanks;
+    //                                        console.log('disagree:' + disAgree + 'agree:' + agree);
+    //                                    }
+    //                                }
+    //                                resolve({
+    //                                    content: answer.answer,
+    //                                    agreeNum: answer.agreeNum,
+    //                                    date: dateFormat(answer.date),
+    //                                    answer_id: answer._id,
+    //                                    agree: agree,
+    //                                    disAgree: disAgree,
+    //                                    thanks: thanks,
+    //                                    user: {
+    //                                        _id: user._id,
+    //                                        name: user.name,
+    //                                        bio: user.bio,
+    //                                        goodAnswer: false,
+    //                                        answerOwner: req.session.user._id == user._id,
+    //                                        profileUrl: user.profileUrl || '/images/system/profile_s.jpg'
+    //                                    }
+    //                                });
+    //                            }
+    //                        })
+    //                    }
+    //                })
+    //            })
+    //            promises.push(promise);
+    //        }
+    //        return promises;
+    //    }
+    //
+    //    Promise.all(getAnswers(question.lstAnswer)).then(function(datas){
+    //        Question.findOne({_id: req.params.id}).populate('lstFollower').exec(function(err, all){
+    //            var followed = false;
+    //            for(var loop = 0; loop < all.lstFollower.length; loop++){
+    //                if(req.session.user._id == all.lstFollower[loop]._id){
+    //                    followed = true;
+    //                    break;
+    //                }
+    //            }
+    //
+    //            return res.render('question', {
+    //                myself:{
+    //                    name: req.session.user.name,
+    //                    profileUrl: req.session.user.profileUrl,
+    //                    _id: req.session.user._id
+    //                },
+    //                answered: answered,
+    //                question_id: req.params.id,
+    //                title: question.title,
+    //                viewNum: question.viewNum,
+    //                createDate: dateFormat(question.date),
+    //                answers: datas,
+    //                more: false,
+    //                followed: followed,
+    //                lstFollower: all.lstFollower,
+    //                answerNum: 0
+    //            });
+    //        });
+    //    })
+    //})
+
 });
 
 // 添加问题

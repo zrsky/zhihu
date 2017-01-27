@@ -7,8 +7,8 @@ var mongoose = require('mongoose');
 * profileUrl        头像路径，没有上传就是空
 * account           登录账号-手机号
 * password          登录密码-sha1加密
-* lstQuestion       所有提过的问题"_id"列表
-* lstAnswers        所有的回答"_id"列表
+* lstQuestion       所有的提问 "_id"列表
+* lstAnswers        所有的回答 "_id"列表
 * lstFollower       关注者"_id"列表
 * viewNum           被浏览次数
 * */
@@ -36,21 +36,23 @@ exports.User = mongoose.model('User', userSchema);
  * viewNum          被浏览次数
  * */
 var questionSchema = mongoose.Schema({
-    userObjId: mongoose.Schema.Types.ObjectId,
+    userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     date: { type: Date, default: Date.now },
     title: String,
-    lstAnswer: [String],
+    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],
     lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     viewNum: {type: Number, default: 0}
 });
 exports.Question = mongoose.model('Question', questionSchema);
 
+
 /* 答案模型
  * userObjId        答案作者"_id"
  * answer           答案内容
  * date             回答时间
- * lstActions       对此答案点赞，支持，反对的记录
+ * lstActions       其他user对此答案点赞，支持，反对的记录
  * agreeNum         赞同数
+ * viewNum          被浏览次数
  * */
 var answerSchema = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
@@ -60,6 +62,7 @@ var answerSchema = mongoose.Schema({
     agreeNum: {type: Number, default: 0}
 });
 exports.Answer = mongoose.model('Answer', answerSchema);
+
 
 /* 对答案的操作模型
  * userObjId        操作用户"_id"
