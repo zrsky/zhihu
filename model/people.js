@@ -16,8 +16,11 @@ module.exports = {
     createUser: function createUser(user){
         return User.create(user);
     },
-    updateProfileUrl: function updateProfileUrl(_id, url){
-        return User.findByIdAndUpdate(_id, {$set: {profileUrl: url}}).exec();
+    updateProfileUrl: function updateProfileUrl(user_id, url){
+        return User.findByIdAndUpdate(user_id, {$set: {profileUrl: url}}).exec();
+    },
+    addOneQuestionRecord: function addOneQuestionRecord(user_id, question_id){
+        return User.findByIdAndUpdate(user_id, {$push: {lstQuestion: question_id}}).exec();
     }
 }
 

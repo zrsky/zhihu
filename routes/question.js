@@ -13,6 +13,7 @@ var Answer = require('../model/mongo').Answer;
 var AnswerAction = require('../model/mongo').AnswerAction;
 var User = require('../model/mongo').User;
 var questionModel = require('../model/question');
+var peopleModel = require('../model/people');
 var fs = require('fs');
 var ejs = require('ejs');
 var dateFormat = require('../lib/commFunc.js').dateFormat;
@@ -25,10 +26,15 @@ router.get('/:id', function(req, res, next) {
 
     Promise.all([
         questionModel.getQuestionPage(req.params.id),
-        questionModel.isAnswered(req.params.id, req.session.user._id)
+        questionModel.getAnswers(req.params.id),
+        questionModel.getFollowers(req.params.id),
+        questionModel.increaseView(req.params.id)
     ]).then(function(result){
         var question = result[0];
-        var answered = result[1] ? true : false;
+        var answers = result[1].lstAnswer;
+        var followers = result[2].lstFollower;
+        var answered = false;
+        var followed = false;
         var latestAnswers = [];
         for(var loop = 0; loop < question.lstAnswer.length; loop++){
             latestAnswers.push({
@@ -49,6 +55,18 @@ router.get('/:id', function(req, res, next) {
                 }
             })
         }
+        for(var loop = 0; loop < answers.length; loop++){
+            if(answers[loop].userObjId == req.session.user._id){
+                answered = true;
+                break;
+            }
+        }
+        for(var loop = 0; loop < followers.length; loop++){
+            if(followers[loop]._id == req.session.user._id){
+                followed = true;
+                break;
+            }
+        }
 
         return res.render('question', {
             myself:{
@@ -63,7 +81,7 @@ router.get('/:id', function(req, res, next) {
             createDate: dateFormat(question.date),
             answers: latestAnswers,
             more: false,
-            followed: false,
+            followed: followed,
             lstFollower: [],
             answerNum: 0
         });
@@ -173,52 +191,35 @@ router.post('/', function(req, res, next){
     if(!req.session.user) {
         return res.redirect('/');
     }
-    User.findById(req.session.user._id, function(err, user){
-        if(err){
-            console.error('find user id[' +  req.session.user._id + '] error!');
-        }
-        if(user == null){
-            return res.status(200).json({error: "no userid"});
-        }
-    })
 
     var title = req.body.title.trim();
     if(title.length == 0){
         return res.status(200);
     }
 
-    Question.create({
+    // todo:怎么两次调用封装在一个model函数调用中？
+    var questionUrl = "/question/";
+    questionModel.addQuestion({
         userObjId: req.session.user._id,
         title: title
-    }, function(err, question){
-        if(!err){
-            User.findByIdAndUpdate(req.session.user._id, {$push: {lstQuestion: question._id}}, function(err, User){
-                if(!err){
-                    return res.status(200).json({"url": "/question/" + question._id});
-                }
-                else{
-                    console.error('add question.id to list failed');
-                }
-            })
-        }
-        else{
-            console.error('save question error');
-        }
+    }).then(function(question){
+        questionUrl += question._id;
+        return peopleModel.addOneQuestionRecord(req.session.user._id, question._id);
+    }).then(function(result){
+        return res.status(200).json({"url": questionUrl});
     })
 })
 
 // 关注问题
 router.post('/:question_id/follow', function(req, res, next) {
     var answered = false;
-    console.log('enter follow');
     if(req.session.user){
-        Question.findByIdAndUpdate(req.params.question_id, {$push:{lstFollower: req.session.user._id}}, function(err, question){
-            if(err){
-                console.log('follow error!');
-                return res.status(200).json({"error": "try again."});
+        questionModel.followQuestion(req.params.question_id, req.session.user._id).then(function(question){
+            if(question){
+                return res.status(200).json({"success": "success"});
             }
             else{
-                return res.status(200).json({"success": "success"});
+                return res.status(200).json({"error": "try again."});
             }
         })
     }
@@ -226,17 +227,17 @@ router.post('/:question_id/follow', function(req, res, next) {
         return res.redirect('/');
     }
 });
+
 // 取消关注问题
 router.post('/:question_id/unfollow', function(req, res, next) {
     var answered = false;
     if(req.session.user){
-        Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstFollower: req.session.user._id}}, function(err, question){
-            if(err){
-                console.log('unfollow error!');
-                return res.status(200).json({"error": "try again."});
+        questionModel.unfollowQuestion(req.params.question_id, req.session.user._id).then(function(question){
+            if(question){
+                return res.status(200).json({"success": "success"});
             }
             else{
-                return res.status(200).json({"success": "success"});
+                return res.status(200).json({"error": "try again."});
             }
         })
     }
@@ -251,55 +252,43 @@ router.post('/:question_id/answer', function(req, res, next){
         // 用户没有登录
         return res.redirect('/');
     }
-    var userInfo = {};
-    User.findById(req.session.user._id, function(err, user){
-        if(err){
-            console.error('find user id[' +  req.session.user._id + '] error!');
-        }
-        if(user == null){
-            return res.status(200).json({error: "no userid"});
-        }
-        userInfo.name = user.name;
-        userInfo.bio = user.bio;
-        userInfo.profileUrl = user.profileUrl;
-    })
-
-    console.log(userInfo);
-    var answer = req.body.answer.trim();
-    if(answer.length == 0){
+    var content = req.body.answer.trim();
+    var myself = {};    // 自己信息
+    var answer = {};
+    if(content.length == 0){
         return res.status(200);
     }
 
-    Answer.create({
-        userObjId: req.session.user._id,
-        answer: answer
-    }, function(err, answer){
-        if(err){
-            console.log('create answer error');
-            return;
-        }
-        Question.findByIdAndUpdate(req.params.question_id, {$push: {lstAnswer: answer._id}}, function(err, question){
-            if(err){
-                console.log('update answer list error');
-                return;
-            }
-            ejs.renderFile('views/components/oneanswer.ejs', {
-                    answerUrl: '/question/'+ req.params.question_id + '/answer/' + answer._id,
-                    content: answer.answer,
-                    agreeNum: 0,
-                    agree: false,
-                    disagree: false,
-                    thanks: false,
-                    date: dateFormat(answer.date),
-                    bestAnswer: false,
-                    bio: userInfo.bio,
-                    name: userInfo.name,
-                    answerOwner: true,
-                    profileUrl: userInfo.profileUrl }, function(err, html){
-                return res.status(200).json({"myAnswer": html});
-            });
+    Promise.all([
+        peopleModel.getUserByAccount(req.session.user.account),
+        questionModel.addAnswer({
+            userObjId: req.session.user._id,
+            answer: content
         })
-    })
+    ]).then(function(result){
+        myself.name = result[0].name;
+        myself.bio = result[0].bio;
+        myself.profileUrl = result[0].profileUrl;
+        answer = result[1];
+        return questionModel.addOneAnswerRecord(req.params.question_id, answer._id);
+    }).then(function(result) {
+        ejs.renderFile('views/components/oneanswer.ejs', {
+            answerUrl: '/question/' + req.params.question_id + '/answer/' + answer._id,
+            content: answer.answer,
+            agreeNum: 0,
+            agree: false,
+            disagree: false,
+            thanks: false,
+            date: dateFormat(answer.date),
+            bestAnswer: false,
+            bio: myself.bio,
+            name: myself.name,
+            answerOwner: true,
+            profileUrl: myself.profileUrl
+        }, function (err, html) {
+            return res.status(200).json({"myAnswer": html});
+        });
+    });
 })
 
 // 修改回答
@@ -308,29 +297,15 @@ router.post('/:question_id/answer/:answer_id', function(req, res, next){
         // 用户没有登录
         return res.redirect('/');
     }
-    console.log('enter edit question');
-    User.findById(req.session.user._id, function(err, user){
-        if(err){
-            console.error('find user id[' +  req.session.user._id + '] error!');
-        }
-        if(user == null){
-            return res.status(200).json({error: "no userid"});
-        }
-    })
 
     var answer = req.body.answer.trim();
     if(answer.length == 0){
         return res.status(200);
     }
+    questionModel.updateAnswer(req.params.answer_id, answer).then(function(answer){
+        return res.status(200).json({"success": "success"});
+    }).catch(next);
 
-    Answer.findByIdAndUpdate(req.params.answer_id, {$set: {answer: answer, date: Date.now()}}, function(err, answer){
-        if(err){
-            console.log('add answer_id to question error');
-        }
-        else{
-            return res.status(200).json({"success": "success"});
-        }
-    })
 })
 
 // 支持，反对，感谢，删除回答
@@ -387,64 +362,76 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
         num = 0;
     }
     else if(req.params.action == 'delete'){
-        Answer.findById(req.params.answer_id).populate('userObjId').exec(function(err, answer){
-            if(err){
-                console.log('add answer_id to question error');
-                return res.status(200).json({"error": "error"});
-            }
+        questionModel.answerAuthorInfo(req.params.answer_id).then(function(answer){
             if(answer.userObjId._id != req.session.user._id){
                 return res.status(200).json({"error": "u are not author!"});
             }
-            for(var loop = 0; loop < answer.lstActions.length; loop++){
-                AnswerAction.remove({_id: answer.lstActions[loop]}, function(err){
-                    console.log('remove table action failed' + err);
-                })
-            }
-            Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
-                if(err){
-                    console.log('update question error');
-                    return res.status(200).json({"error": "u are not author!"});
-                }
-                answer.remove(function(err){
-                    if(err){
-                        console.log('update question error');
-                        return res.status(200).json({"error": "u are not author!"});
-                    }
+            return Promise.all([
+                questionModel.removeOneAnswerRecord(req.params.question_id, req.params.answer_id),
+                questionModel.removeAnswer(answer)
+            ])
+        }).then(function(result){
+            fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
+                var html = ejs.render(data.toString(), {
+                    "name": result[0].userObjId.name,
+                    "profileUrl": result[0].userObjId.profileUrl || "/images/system/profile_s.jpg"});
 
-                    fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
-                        var html = ejs.render(data.toString(), {
-                            "name": answer.userObjId.name,
-                            "profileUrl": answer.userObjId.profileUrl || "/images/system/profile_s.jpg"});
-
-                        return res.status(200).json({"answerEditWrap": html});
-                    });
-                });
-            })
+                return res.status(200).json({"answerEditWrap": html});
+            });
         })
+        //Answer.findById(req.params.answer_id).populate('userObjId').exec(function(err, answer){
+        //    if(err){
+        //        console.log('add answer_id to question error');
+        //        return res.status(200).json({"error": "error"});
+        //    }
+        //    if(answer.userObjId._id != req.session.user._id){
+        //        return res.status(200).json({"error": "u are not author!"});
+        //    }
+        //    for(var loop = 0; loop < answer.lstActions.length; loop++){
+        //        AnswerAction.remove({_id: answer.lstActions[loop]}, function(err){
+        //            console.log('remove table action failed' + err);
+        //        })
+        //    }
+        //    Question.findByIdAndUpdate(req.params.question_id, {$pop:{lstAnswer: req.params.answer_id}}, function(err, question){
+        //        if(err){
+        //            console.log('update question error');
+        //            return res.status(200).json({"error": "u are not author!"});
+        //        }
+        //        answer.remove(function(err){
+        //            if(err){
+        //                console.log('update question error');
+        //                return res.status(200).json({"error": "u are not author!"});
+        //            }
+        //
+        //            fs.readFile('views/components/answer-edit-wrap-add.ejs', function(err, data){
+        //                var html = ejs.render(data.toString(), {
+        //                    "name": answer.userObjId.name,
+        //                    "profileUrl": answer.userObjId.profileUrl || "/images/system/profile_s.jpg"});
+        //
+        //                return res.status(200).json({"answerEditWrap": html});
+        //            });
+        //        });
+        //    })
+        //})
         return;  // 不能往下走
     }
 
     var found = false;
-    Answer.findById(req.params.answer_id).populate('lstActions').exec(function(err, answer){
-        if(err){
-            console.log('add answer_id to question error');
-            return res.status(200).json({"error": "error"});
-        }
-        for(var loop = 0; loop < answer.lstActions.length; loop++){
-            if(answer.lstActions[loop].userObjId == req.session.user._id){
+    questionModel.answerActions(req.params.answer_id).then(function(answer){
+        for(var loop = 0; loop < answer.lstActions.length; loop++) {
+            if (answer.lstActions[loop].userObjId == req.session.user._id) {
                 found = true;
-                if(req.params.action == 'disagree' && answer.lstActions[loop].isAgree){
+                if (req.params.action == 'disagree' && answer.lstActions[loop].isAgree) {
                     num = -1;
                 }
-                console.log(update);
-                AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: update}, function(err, action){
-                    if(err){
+                AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: update}, function (err, action) {
+                    if (err) {
                         console.log('update action failed!');
                     }
-                    if(num != 0){
+                    if (num != 0) {
                         answer.agreeNum += num;
-                        answer.save(function(err){
-                            if(err){
+                        answer.save(function (err) {
+                            if (err) {
                                 console.log('update answer agree num error!');
                             }
                         })
@@ -454,31 +441,61 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
                 break; // no need loop
             }
         }
-
-        if(!found){
-            // 创建一个action记录
-            AnswerAction.create({
-                userObjId: req.session.user._id,
-                isAgree: update.isAgree || false,
-                isDisagree: update.isDisagree || false,
-                isThanks: update.isThanks || false
-            }, function(err, action){
-                if(err){
-                    console.log('create answer action error:' + err);
-                }
-                else{
-                    answer.agreeNum += num;
-                    answer.lstActions.push(action._id);
-                    answer.save(function(err){
-                        if(err){
-                            console.log('update answer agree num error!');
-                        }
-                        return res.status(200).json({"agreed": true});
-                    })
-                }
-            });
-        }
     })
+    //Answer.findById(req.params.answer_id).populate('lstActions').exec(function(err, answer){
+    //    if(err){
+    //        console.log('add answer_id to question error');
+    //        return res.status(200).json({"error": "error"});
+    //    }
+    //    for(var loop = 0; loop < answer.lstActions.length; loop++){
+    //        if(answer.lstActions[loop].userObjId == req.session.user._id){
+    //            found = true;
+    //            if(req.params.action == 'disagree' && answer.lstActions[loop].isAgree){
+    //                num = -1;
+    //            }
+    //            console.log(update);
+    //            AnswerAction.findByIdAndUpdate(answer.lstActions[loop]._id, {$set: update}, function(err, action){
+    //                if(err){
+    //                    console.log('update action failed!');
+    //                }
+    //                if(num != 0){
+    //                    answer.agreeNum += num;
+    //                    answer.save(function(err){
+    //                        if(err){
+    //                            console.log('update answer agree num error!');
+    //                        }
+    //                    })
+    //                }
+    //                return res.status(200).json({"agreed": "success"});
+    //            })
+    //            break; // no need loop
+    //        }
+    //    }
+    //
+    //    if(!found){
+    //        // 创建一个action记录
+    //        AnswerAction.create({
+    //            userObjId: req.session.user._id,
+    //            isAgree: update.isAgree || false,
+    //            isDisagree: update.isDisagree || false,
+    //            isThanks: update.isThanks || false
+    //        }, function(err, action){
+    //            if(err){
+    //                console.log('create answer action error:' + err);
+    //            }
+    //            else{
+    //                answer.agreeNum += num;
+    //                answer.lstActions.push(action._id);
+    //                answer.save(function(err){
+    //                    if(err){
+    //                        console.log('update answer agree num error!');
+    //                    }
+    //                    return res.status(200).json({"agreed": true});
+    //                })
+    //            }
+    //        });
+    //    }
+    //})
 })
 
 module.exports = router;
