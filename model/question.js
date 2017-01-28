@@ -56,13 +56,25 @@ module.exports = {
     removeOneAnswerRecord: function removeOneAnswerRecord(question_id, answer_id){
         return Question.findByIdAndUpdate(question_id, {$pop: {lstAnswer: answer_id}}).exec();
     },
-    updateAnswer: function updateAnswer(answer_id, answer){
-        return Answer.findByIdAndUpdate(answer_id, {$set: {answer: answer, date: Date.now()}}).exec();
+    updateAnswer: function updateAnswer(answer_id, content){
+        return Answer.findByIdAndUpdate(answer_id, {$set: {answer: content, date: Date.now()}}).exec();
+    },
+    updateAnswerAgreeNum: function agreeAnswer(answer_id, num){
+        return Answer.findByIdAndUpdate(answer_id, {$inc: {agreeNum: num}}).exec();
     },
     answerAuthorInfo: function answerAuthorInfo(answer_id){
         return Answer.findById(answer_id).populate('userObjId').exec();
     },
     /* action start */
+    addActions: function addActions(action){
+        return AnswerAction.create(action);
+    },
+    addOneActionRecord: function addOneAnswerRecord(answer_id, action_id){
+        return Answer.findByIdAndUpdate(answer_id, {$push: {lstActions: action_id}}).exec();
+    },
+    removeOneActionRecord: function removeOneActionRecord(answer_id, action_id){
+        return Answer.findByIdAndUpdate(answer_id, {$pop: {lstActions: action_id}}).exec();
+    },
     answerActions: function answerActions(answer_id){
         return Answer.findById(answer_id).populate('lstActions').exec();
     },
