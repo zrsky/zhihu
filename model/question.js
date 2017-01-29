@@ -37,7 +37,7 @@ module.exports = {
         return Question.findByIdAndUpdate(question_id, {$push: {lstFollower: user_id}}).exec();
     },
     unfollowQuestion: function unfollowQuestion(question_id, user_id){
-        return Question.findByIdAndUpdate(question_id, {$pop: {lstFollower: user_id}}).exec();
+        return Question.findByIdAndUpdate(question_id, {$pull: {lstFollower: user_id}}).exec();
     },
     increaseView: function increaseView(question_id){
         return Question
@@ -54,7 +54,7 @@ module.exports = {
         return Question.findByIdAndUpdate(question_id, {$push: {lstAnswer: answer_id}}).exec();
     },
     removeOneAnswerRecord: function removeOneAnswerRecord(question_id, answer_id){
-        return Question.findByIdAndUpdate(question_id, {$pop: {lstAnswer: answer_id}}).exec();
+        return Question.findByIdAndUpdate(question_id, {$pull: {lstAnswer: answer_id}}).exec();
     },
     updateAnswer: function updateAnswer(answer_id, content){
         return Answer.findByIdAndUpdate(answer_id, {$set: {answer: content, date: Date.now()}}).exec();
@@ -73,7 +73,7 @@ module.exports = {
         return Answer.findByIdAndUpdate(answer_id, {$push: {lstActions: action_id}}).exec();
     },
     removeOneActionRecord: function removeOneActionRecord(answer_id, action_id){
-        return Answer.findByIdAndUpdate(answer_id, {$pop: {lstActions: action_id}}).exec();
+        return Answer.findByIdAndUpdate(answer_id, {$pull: {lstActions: action_id}}).exec();
     },
     answerActions: function answerActions(answer_id){
         return Answer.findById(answer_id).populate('lstActions').exec();

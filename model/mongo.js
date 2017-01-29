@@ -20,7 +20,7 @@ var userSchema = mongoose.Schema({
     account: {type: String, unique: true},
     password: String,
     lstQuestion: [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}],
-    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],     // todo:未实现
+    lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],
     lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],     // todo:未实现
     viewNum: {type: Number, default: 0}
 });
@@ -58,6 +58,7 @@ var answerSchema = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     answer: String,
     date: { type: Date, default: Date.now },
+    questionId: {type: mongoose.Schema.Types.ObjectId, ref: 'Question'},
     lstActions: [{type: mongoose.Schema.Types.ObjectId, ref: 'AnswerAction'}],
     agreeNum: {type: Number, default: 0}
 });

@@ -46,63 +46,17 @@
                             </div>
                         </div>
 <% } %>
-
                         <div class="top">
-                            <div class="weibo-wrap">
-                                <a class="zm-profile-header-user-weibo" href="http://weibo.com/vczh">
-                                    <i class="zm-profile-header-icon sina"></i>
-                                </a>
-                            </div>
                             <div class="title-section">
                                 <span class="name"><%= name %></span>
                             </div>
-                            <div class="bio ellipsis" title="专业造轮子，拉黑抢前排。gaclib.net">
+                            <div class="bio ellipsis">
                                 专业造轮子，拉黑抢前排。
-                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
-                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
-                                    <i class="icon-external"></i>
-                                </a>
                             </div>
                         </div>
                         <div class="zm-profile-header-info">
                             <div class="zm-profile-header-user-describe">
                                 <div class="items">
-                                    <div class="item editable-group">
-                                        <i class="icon icon-profile-location"></i>
-                                        <span class="info-wrap">
-                                            <span class="location item">
-                                                <a href="javascript:;" class="topic-link">西雅图（Seattle）</a>
-                                            </span>
-                                            <span class="business item">
-                                                <a href="javascript:;" class="topic-link">计算机软件</a>
-                                            </span>
-                                            <span class="gender item">
-                                                <i class="icon icon-profile-male"></i>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <div class="item editable-group">
-                                        <i class="icon icon-profile-company"></i>
-                                        <span class="info-wrap">
-                                            <span class="employment item" title="Microsoft Office">
-                                                <a href="javascript:;" class="topic-link">Microsoft Office</a>
-                                            </span>
-                                            <span class="position item" title="Developer">
-                                                <a href="javascript:;" class="topic-link">Developer</a>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <div class="item editable-group">
-                                        <i class="icon icon-profile-education"></i>
-                                        <span class="info-wrap">
-                                            <span class="education item" title="华南理工大学">
-                                                <a href="javascript:;" class="topic-link">华南理工大学</a>
-                                            </span>
-                                            <span class="education-extra item" title="软件学院">
-                                                <a href="javascript:;" class="topic-link">软件学院</a>
-                                            </span>
-                                        </span>
-                                    </div>
                                     <div class="item">
                                         <a class="zm-profile-header-user-detail zg-link-litblue-normal">
                                             <i class="icon zm-profile-header-icon"></i>
@@ -110,57 +64,19 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="zm-profile-header-describe editable-group">
-                                    <span class="info-wrap fold-wrap fold">
-                                        <span class="description unfold-itme">
-                                            <span class="content">
-                                                长期开发跨越三大PC平台的GUI库<br>
-                                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
-                                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
-                                                    <i class="icon-external"></i>
-                                                </a>
-                                                ，讨论QQ群：231200072（不闲聊）<br>
-                                                不再更新的技术博客：
-                                                <a href="//link.zhihu.com/?target=http://www.cppblog.com/vczh" class="external">
-                                                    <span class="invisible">http://</span><span class="visible">cppblog.com/vczh</span>
-                                                    <i class="icon-external"></i>
-                                                </a>
-                                            </span>
-                                            <a href="javascript:;" name="fold" class="fold collapse meta-item">
-                                                <i class="z-icon-fold"></i>收起
-                                            </a>
-                                        </span>
-                                        <span class="fold-item hidden">
-                                            <span class="content">
-                                                长期开发跨越三大PC平台的GUI库<br>
-                                                <a href="//link.zhihu.com/?target=htp%3A//gaclib.net" class="external">
-                                                    <span class="invisible">http://</span><span class="visible">gaclib.net</span>
-                                                    <i class="icon-external"></i>
-                                                </a>
-                                                ，讨论QQ群：231200072（不闲聊）
-                                            </span>
-                                            <a href="javascript:;" class="unfold zg-link-litblue-normal">显示全部 »</a>
-                                        </span>
-                                    </span>
-                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="zm-profile-header-marked">
-                        <i class="sprite-global-icom-marked"></i>
-                        被编辑推荐收录了
-                        <a class="zg-link-litblue-normal" href="javascript:;">4 个回答</a>
                     </div>
                     <div class="zm-profile-header-operation clearFix">
                         <div class="zm-profile-header-info-list">
                             <span class="zm-profile-header-info-title">获得</span>
                             <span class="zm-profile-header-user-agree">
                                 <span class="zm-profile-header-icon"></span>
-                                <strong>8240848</strong>赞同
+                                <strong>0</strong>赞同
                             </span>
                             <span class="zm-profile-header-user-thanks">
                                 <span class="zm-profile-header-icon"></span>
-                                <strong>109889</strong>感谢
+                                <strong>0</strong>感谢
                             </span>
                         </div>
 <% if(!isMyself){ %>
@@ -183,7 +99,7 @@
                         </a>
                         <a class="item" href="/people/excited-vczh/answers">
                             回答
-                            <span class="num">12449</span>
+                            <span class="num"><%= answerNum %></span>
                         </a>
                         <a class="item" href="/people/excited-vczh/posts">
                             文章
@@ -199,11 +115,11 @@
                         </a>
                     </div>
                 </div>
-                <%- include components/people-answer.ejs %>
+                <%- include('components/people-answer.ejs', {answers: latestAnswers}) %>
                 <%- include('components/people-question.ejs', {questions: latestQuestions}) %>
             </div>
         </div>
-        <%- include components/people-sidebar.ejs %>
+        <%- include('components/people-sidebar.ejs',{viewNum: viewNum}) %>
     </div>
     <%- include components/addQuestion %>
     <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>

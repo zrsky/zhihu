@@ -31,11 +31,12 @@ router.get('/:id', function(req, res, next) {
         questionModel.increaseView(req.params.id)
     ]).then(function(result){
         var question = result[0];
-        var answers = result[1].lstAnswer;
-        var followers = result[2].lstFollower;
+        var allAnswers = result[1].lstAnswer;
+        var allFollowers = result[2].lstFollower;
         var answered = false;
         var followed = false;
         var latestAnswers = [];
+        var latestFollowers = [];
         for(var loop = 0; loop < question.lstAnswer.length; loop++){
             var agree = false,
                 disagree = false,
@@ -66,14 +67,20 @@ router.get('/:id', function(req, res, next) {
                 }
             })
         }
-        for(var loop = 0; loop < answers.length; loop++){
-            if(answers[loop].userObjId == req.session.user._id){
+        for(var loop = 0; loop < question.lstFollower.length; loop++) {
+            latestFollowers.push({
+                _id: question.lstFollower[loop]._id,
+                profileUrl: question.lstFollower[loop].profileUrl || '/images/system/profile_s.jpg'
+            })
+        }
+        for(var loop = 0; loop < allAnswers.length; loop++){
+            if(allAnswers[loop].userObjId == req.session.user._id){
                 answered = true;
                 break;
             }
         }
-        for(var loop = 0; loop < followers.length; loop++){
-            if(followers[loop]._id == req.session.user._id){
+        for(var loop = 0; loop < allFollowers.length; loop++){
+            if(allFollowers[loop]._id == req.session.user._id){
                 followed = true;
                 break;
             }
@@ -93,7 +100,7 @@ router.get('/:id', function(req, res, next) {
             answers: latestAnswers,
             more: false,
             followed: followed,
-            lstFollower: [],
+            lstFollower: latestFollowers,
             answerNum: 0
         });
     })
@@ -110,7 +117,7 @@ router.post('/', function(req, res, next){
         return res.status(200);
     }
 
-    // todo:怎么两次调用封装在一个model函数调用中？
+    // todo:能否将两次调用封装在一个model函数调用中？
     var questionUrl = "/question/";
     questionModel.addQuestion({
         userObjId: req.session.user._id,
@@ -123,10 +130,13 @@ router.post('/', function(req, res, next){
     })
 })
 
-// 关注问题
-router.post('/:question_id/follow', function(req, res, next) {
-    var answered = false;
-    if(req.session.user){
+// 关注，取消关注问题，添加问题回答
+router.post('/:question_id/:action', function(req, res, next) {
+    if(!req.session.user){
+        return res.redirect('/');
+    }
+    if(req.params.action == 'follow'){
+        console.log('enter follow')
         questionModel.followQuestion(req.params.question_id, req.session.user._id).then(function(question){
             if(question){
                 return res.status(200).json({"success": "success"});
@@ -136,15 +146,7 @@ router.post('/:question_id/follow', function(req, res, next) {
             }
         })
     }
-    else{
-        return res.redirect('/');
-    }
-});
-
-// 取消关注问题
-router.post('/:question_id/unfollow', function(req, res, next) {
-    var answered = false;
-    if(req.session.user){
+    else if(req.params.action == 'unfollow'){
         questionModel.unfollowQuestion(req.params.question_id, req.session.user._id).then(function(question){
             if(question){
                 return res.status(200).json({"success": "success"});
@@ -154,55 +156,54 @@ router.post('/:question_id/unfollow', function(req, res, next) {
             }
         })
     }
+    else if(req.params.action == 'addAnswer'){
+        var content = req.body.answer.trim();
+        var myself = {};    // 自己信息
+        var answer = {};
+        if(content.length == 0){
+            return res.status(200);
+        }
+
+        Promise.all([
+            peopleModel.getUserByAccount(req.session.user.account),
+            questionModel.addAnswer({
+                userObjId: req.session.user._id,
+                questionId: req.params.question_id,
+                answer: content
+            })
+        ]).then(function(result){
+            myself.name = result[0].name;
+            myself.bio = result[0].bio;
+            myself.profileUrl = result[0].profileUrl;
+            answer = result[1];
+            return Promise.all([
+                questionModel.addOneAnswerRecord(req.params.question_id, answer._id),
+                peopleModel.addOneAnswerRecord(req.session.user._id, answer._id)
+            ])
+        }).then(function(result) {
+            ejs.renderFile('views/components/oneanswer.ejs', {
+                answerUrl: '/question/' + req.params.question_id + '/answer/' + answer._id,
+                content: answer.answer,
+                agreeNum: 0,
+                agree: false,
+                disagree: false,
+                thanks: false,
+                date: dateFormat(answer.date),
+                bestAnswer: false,
+                bio: myself.bio,
+                name: myself.name,
+                answerOwner: true,
+                profileUrl: myself.profileUrl
+            }, function (err, html) {
+                return res.status(200).json({"myAnswer": html});
+            });
+        });
+    }
     else{
-        return res.redirect('/');
+        console.log('enter else');
+        return res.status(200).json({"error": "try again."});
     }
 });
-
-// 添加回答
-router.post('/:question_id/answer', function(req, res, next){
-    if(!req.session.user) {
-        // 用户没有登录
-        return res.redirect('/');
-    }
-    var content = req.body.answer.trim();
-    var myself = {};    // 自己信息
-    var answer = {};
-    if(content.length == 0){
-        return res.status(200);
-    }
-
-    Promise.all([
-        peopleModel.getUserByAccount(req.session.user.account),
-        questionModel.addAnswer({
-            userObjId: req.session.user._id,
-            answer: content
-        })
-    ]).then(function(result){
-        myself.name = result[0].name;
-        myself.bio = result[0].bio;
-        myself.profileUrl = result[0].profileUrl;
-        answer = result[1];
-        return questionModel.addOneAnswerRecord(req.params.question_id, answer._id);
-    }).then(function(result) {
-        ejs.renderFile('views/components/oneanswer.ejs', {
-            answerUrl: '/question/' + req.params.question_id + '/answer/' + answer._id,
-            content: answer.answer,
-            agreeNum: 0,
-            agree: false,
-            disagree: false,
-            thanks: false,
-            date: dateFormat(answer.date),
-            bestAnswer: false,
-            bio: myself.bio,
-            name: myself.name,
-            answerOwner: true,
-            profileUrl: myself.profileUrl
-        }, function (err, html) {
-            return res.status(200).json({"myAnswer": html});
-        });
-    });
-})
 
 // 修改回答
 router.post('/:question_id/answer/:answer_id', function(req, res, next){
@@ -281,6 +282,7 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
             }
             return Promise.all([
                 questionModel.removeOneAnswerRecord(req.params.question_id, req.params.answer_id),
+                peopleModel.removeOneAnswerRecord(req.session.user._id, req.params.answer_id),
                 questionModel.removeAnswer(answer)
             ])
         }).then(function(result){

@@ -13,14 +13,28 @@ router.get('/:user_id', function(req, res, next) {
         return res.redirect('/');
     }
 
-    userModel.getUserPage(req.params.user_id).then(function(user){
+    Promise.all([
+        userModel.getUserPage(req.params.user_id),
+        userModel.increaseView(req.params.user_id)
+    ]).then(function(result){
         var latestQuestions = [];
+        var latestAnswers = [];
+        var user = result[0];
         for(var loop = 0; loop < user.lstQuestion.length; loop++){
             latestQuestions.push({
                 title: user.lstQuestion[loop].title,
+                url: '/question/' + user.lstQuestion[loop]._id,
                 viewNum: user.lstQuestion[loop].viewNum,
                 answerNum: user.lstQuestion[loop].lstAnswer.length,
                 followNum: user.lstQuestion[loop].lstFollower.length
+            })
+        }
+        for(var loop = 0; loop < user.lstAnswer.length; loop++){
+            latestAnswers.push({
+                agreeNum: user.lstAnswer[loop].agreeNum,
+                question: user.lstAnswer[loop].questionId.title,
+                url: '/question/' + user.lstAnswer[loop].questionId._id,
+                answer: user.lstAnswer[loop].answer
             })
         }
 
@@ -34,7 +48,10 @@ router.get('/:user_id', function(req, res, next) {
             name: user.name,
             profileUrl: user.profileUrl || '/images/system/profile_l.jpg',
             latestQuestions: latestQuestions,
-            questionNum: user.lstQuestion.length
+            latestAnswers: latestAnswers,
+            questionNum: user.lstQuestion.length,
+            answerNum: user.lstAnswer.length,
+            viewNum: user.viewNum
         });
     }).catch(next);
 });

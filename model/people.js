@@ -9,9 +9,21 @@ module.exports = {
             path: 'lstQuestion',
             options:{
                 limit: 3,
-                sort: {"_id": -1}
+                sort: {"_id": 1}
+            }
+        }).populate({
+            path: 'lstAnswer',
+            options:{
+                limit: 3,
+                sort: {"_id": 1},
+                populate: {path: 'questionId'}
             }
         }).exec();
+    },
+    increaseView: function increaseView(user_id){
+        return User
+            .findByIdAndUpdate(user_id, {$inc: {viewNum: 1}})
+            .exec();
     },
     createUser: function createUser(user){
         return User.create(user);
@@ -21,6 +33,15 @@ module.exports = {
     },
     addOneQuestionRecord: function addOneQuestionRecord(user_id, question_id){
         return User.findByIdAndUpdate(user_id, {$push: {lstQuestion: question_id}}).exec();
+    },
+    removeOneQuestionRecord: function removeOneQuestionRecord(user_id, question_id){
+        return User.findByIdAndUpdate(user_id, {$pull: {lstQuestion: question_id}}).exec();
+    },
+    addOneAnswerRecord: function addOneAnswerRecord(user_id, answer_id){
+        return User.findByIdAndUpdate(user_id, {$push: {lstAnswer: answer_id}}).exec();
+    },
+    removeOneAnswerRecord: function removeOneAnswerRecord(user_id, answer_id){
+        return User.findByIdAndUpdate(user_id, {$pull: {lstAnswer: answer_id}}).exec();
     }
 }
 

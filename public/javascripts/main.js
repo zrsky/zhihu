@@ -341,7 +341,7 @@ function clickAddAnswer(){
 
         $.ajax({
             type: 'POST',
-            url: '/question/' + question_id + '/answer/',
+            url: '/question/' + question_id + '/addAnswer/',
             data: {
                 answer: answer
             },
