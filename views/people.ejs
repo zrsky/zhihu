@@ -115,11 +115,12 @@
                         </a>
                     </div>
                 </div>
-                <%- include('components/people-answer.ejs', {answers: latestAnswers}) %>
-                <%- include('components/people-question.ejs', {questions: latestQuestions}) %>
+                <%- include('components/userPage/people-answer.ejs', {answers: latestAnswers}) %>
+                <%- include('components/userPage/people-question.ejs', {questions: latestQuestions}) %>
+                <%- include components/userPage/people-activities.ejs %>
             </div>
         </div>
-        <%- include('components/people-sidebar.ejs',{viewNum: viewNum}) %>
+        <%- include('components/userPage/people-sidebar.ejs',{viewNum: viewNum}) %>
     </div>
     <%- include components/addQuestion %>
     <script type="text/javascript" src="/javascripts/jquery-3.1.1.min.js"></script>

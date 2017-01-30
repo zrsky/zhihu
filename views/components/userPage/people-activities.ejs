@@ -1,0 +1,18 @@
+<%/* 个人页面中动态模块模版
+
+*/%>
+<div class="zm-profile-section-wrap" id="zh-profile-activity-wrap">
+    <div class="zm-profile-section-head">
+        <a class="zm-profile-section-title" href="/people/excited-vczh/answer-card">
+            <h2 class="zm-profile-section-name">最新动态</h2>
+        </a>
+    </div>
+    <div class="zm-profile-section-list profile-feed-wrap">
+        <div id="zh-profile-activity-page-list">
+            <%- include people-activities-followQuestion.ejs %>
+            <%- include people-activities-agreeAnswer.ejs %>
+            <%- include people-activities-answer.ejs %>
+        </div>
+        <a class="zg-btn-white zu-button-more">更多</a>
+    </div>
+</div>

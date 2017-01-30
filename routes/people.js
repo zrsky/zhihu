@@ -5,6 +5,7 @@ var fs = require('fs');
 var sha1 = require('sha1');
 var path = require('path');
 var userModel = require('../model/people');
+var questionModel = require('../model/question');
 var validatemobile = require('../lib/commFunc').validatemobile;
 
 // 个人页面
@@ -19,6 +20,7 @@ router.get('/:user_id', function(req, res, next) {
     ]).then(function(result){
         var latestQuestions = [];
         var latestAnswers = [];
+        var latestActivities = [];
         var user = result[0];
         for(var loop = 0; loop < user.lstQuestion.length; loop++){
             latestQuestions.push({
@@ -37,7 +39,9 @@ router.get('/:user_id', function(req, res, next) {
                 answer: user.lstAnswer[loop].answer
             })
         }
-
+        return Promise.all(
+            userModel.getUserPage(req.params.user_id)
+        )
         res.render('people', {
             isMyself: req.session.user._id == req.params.user_id,
             myself:{
@@ -49,10 +53,13 @@ router.get('/:user_id', function(req, res, next) {
             profileUrl: user.profileUrl || '/images/system/profile_l.jpg',
             latestQuestions: latestQuestions,
             latestAnswers: latestAnswers,
+            latestActivities: latestActivities,
             questionNum: user.lstQuestion.length,
             answerNum: user.lstAnswer.length,
             viewNum: user.viewNum
         });
+    }).then(function(result){
+        console.log('enter here!')
     }).catch(next);
 });
 

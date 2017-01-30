@@ -18,6 +18,12 @@ module.exports = {
             }
         }).exec()
     },
+    getOneAnswer: function getOneAnswer(answer_id){
+        return Answer.findById(answer_id).exec();
+    },
+    getOneQuestion: function getOneQuestion(question_id){
+        return Question.findById(question_id).exec();
+    },
     getAnswers: function getAnswers(question_id){
         return Question
             .findById(question_id)

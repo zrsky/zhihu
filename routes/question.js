@@ -14,6 +14,7 @@ var AnswerAction = require('../model/mongo').AnswerAction;
 var User = require('../model/mongo').User;
 var questionModel = require('../model/question');
 var peopleModel = require('../model/people');
+var activityModel = require('../model/activity');
 var fs = require('fs');
 var ejs = require('ejs');
 var dateFormat = require('../lib/commFunc.js').dateFormat;
@@ -118,15 +119,25 @@ router.post('/', function(req, res, next){
     }
 
     // todo:能否将两次调用封装在一个model函数调用中？
-    var questionUrl = "/question/";
+    var info = {
+        url: "/question/",
+        date: null
+    }
     questionModel.addQuestion({
         userObjId: req.session.user._id,
         title: title
     }).then(function(question){
-        questionUrl += question._id;
-        return peopleModel.addOneQuestionRecord(req.session.user._id, question._id);
+        info.url += question._id;
+        info.date = question.date;
+        console.log('question:' + info);
+        return Promise.all([
+            peopleModel.addOneQuestionRecord(req.session.user._id, question._id),
+            activityModel.activityAddQ(req.session.user._id, question._id, question.date)
+        ])
     }).then(function(result){
-        return res.status(200).json({"url": questionUrl});
+        return peopleModel.addOneActivityRecord(req.session.user._id, result[1]._id);
+    }).then(function(result){
+        return res.status(200).json({"url": info.url});
     })
 })
 

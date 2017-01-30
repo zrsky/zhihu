@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 * lstQuestion       所有的提问 "_id"列表
 * lstAnswers        所有的回答 "_id"列表
 * lstFollower       关注者"_id"列表
+* lstActivity       动态列表
 * viewNum           被浏览次数
 * */
 var userSchema = mongoose.Schema({
@@ -22,9 +23,27 @@ var userSchema = mongoose.Schema({
     lstQuestion: [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}],
     lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],
     lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],     // todo:未实现
+    lstActivity: [{type: mongoose.Schema.Types.ObjectId, ref: 'UserActivity'}],
     viewNum: {type: Number, default: 0}
 });
 exports.User = mongoose.model('User', userSchema);
+
+/* 个人动态模型
+ * userObjId        用户id
+ * date             动态时间
+ * activityType     动态类型 [":回答" "cq:提问" "aa:赞同回答" "fq:关注问题"]
+ * date             动态时间
+ * questionId       问题_id 如果动态为问题相关，则不为空
+ * answerId         回答_id 如果动态为回答相关，则不为空
+ * */
+var userActivity = mongoose.Schema({
+    userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    activityType: {type: String, enum: ['addAnswer', 'agreeAnswer', 'addQuestion', 'followQuestion']},
+    date: Date,
+    questionId: {type: mongoose.Schema.Types.ObjectId, ref: 'Question'},
+    answerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Answer'},
+})
+exports.UserActivity = mongoose.model('UserActivity', userActivity);
 
 
 /* 问题模型
