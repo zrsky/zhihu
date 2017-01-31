@@ -33,15 +33,13 @@ exports.User = mongoose.model('User', userSchema);
  * date             动态时间
  * activityType     动态类型 [":回答" "cq:提问" "aa:赞同回答" "fq:关注问题"]
  * date             动态时间
- * questionId       问题_id 如果动态为问题相关，则不为空
- * answerId         回答_id 如果动态为回答相关，则不为空
+ * documentId       文档id 关联是answerSchema_id或questionSchema_id
  * */
 var userActivity = mongoose.Schema({
     userObjId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     activityType: {type: String, enum: ['addAnswer', 'agreeAnswer', 'addQuestion', 'followQuestion']},
-    date: Date,
-    questionId: {type: mongoose.Schema.Types.ObjectId, ref: 'Question'},
-    answerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Answer'},
+    date: {type: Date, default: Date.now },
+    documentId: mongoose.Schema.Types.ObjectId
 })
 exports.UserActivity = mongoose.model('UserActivity', userActivity);
 

@@ -115,9 +115,9 @@
                         </a>
                     </div>
                 </div>
-                <%- include('components/userPage/people-answer.ejs', {answers: latestAnswers}) %>
-                <%- include('components/userPage/people-question.ejs', {questions: latestQuestions}) %>
-                <%- include components/userPage/people-activities.ejs %>
+                <%- include('components/userPage/people-answer', {answers: latestAnswers}) %>
+                <%- include('components/userPage/people-question', {questions: latestQuestions}) %>
+                <%- include('components/userPage/people-activities', {activities: latestActivities}) %>
             </div>
         </div>
         <%- include('components/userPage/people-sidebar.ejs',{viewNum: viewNum}) %>

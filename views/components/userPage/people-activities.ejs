@@ -9,9 +9,17 @@
     </div>
     <div class="zm-profile-section-list profile-feed-wrap">
         <div id="zh-profile-activity-page-list">
-            <%- include people-activities-followQuestion.ejs %>
-            <%- include people-activities-agreeAnswer.ejs %>
-            <%- include people-activities-answer.ejs %>
+<% activities.forEach(function(activity){ %>
+    <% if(activity.activityType == 'addQuestion'){ %>
+            <%- include('people-activities-addQuestion', {activity: activity}) %>
+    <% }else if(activity.activityType == 'followQuestion'){ %>
+            <%- include('people-activities-followQuestion', {activity: activity}) %>
+    <% }else if(activity.activityType == 'addAnswer'){ %>
+            <%- include('people-activities-addAnswer', {activity: activity}) %>
+    <% }else if(activity.activityType == 'agreeAnswer'){ %>
+            <%- include('people-activities-agreeAnswer', {activity: activity}) %>
+    <% } %>
+<% }) %>
         </div>
         <a class="zg-btn-white zu-button-more">更多</a>
     </div>

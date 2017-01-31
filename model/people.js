@@ -22,7 +22,8 @@ module.exports = {
             path: 'lstActivity',
             options:{
                 limit: 3,
-                sort: {"_id": -1}
+                sort: {"_id": -1},
+                populate: {path: 'userObjId'}
             }
         }).exec();
     },

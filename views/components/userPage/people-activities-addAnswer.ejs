@@ -1,50 +1,49 @@
 <div class="zm-profile-section-item">
-    <span class="zm-profile-setion-time zg-gray zg-right">1 小时前</span>
+    <span class="zm-profile-setion-time zg-gray zg-right"><%= activity.date %></span>
     <div class="zm-profile-section-main zm-profile-section-activity-main">
         <span class="author-link-line">
-            <a href="vzch.html" class="zg-link author-link">vczh</a>
+            <a href="/people/<%= activity.userObjId %>" class="zg-link author-link"><%= activity.userName %></a>
         </span>
         回答了回答
-        <a class="question_link" href="question.html">工程师文化一定是好的吗？</a>
+        <a class="question_link" href="/question/<%= activity.questionId %>"><%= activity.question %></a>
     </div>
     <div class="zm-item-answer">
         <div class="zm-item-vote">
-            <a href="javascript:;" class="zm-item-vote-count">74</a>
+            <a href="javascript:;" class="zm-item-vote-count"><%= activity.agreeNum %></a>
         </div>
         <div class="zm-votebar">
             <button class="up" title="赞同">
                 <i class="icon vote-arrow"></i>
-                <span class="count">97</span>
-                <!--<span class="label">赞同</span>-->
+                <span class="count"><%= activity.agreeNum %></span>
             </button>
-            <button class="down pressed" title="反对，不会显示您的姓名">
+            <button class="down" title="反对，不会显示您的姓名">
                 <i class="icon vote-arrow"></i>
             </button>
         </div>
         <div class="answer-head">
             <div class="zm-item-answer-author-info">
-                            <span class="summary-wrapper">
-                                <span class="author-link-line">
-                                    <a class="author-link" href="/people/woshixiaosongshu">vczh</a>
-                                </span>
-                                <span title="Materials Science, PhD" class="bio">专业造轮子，拉黑抢前排。…</span>
-                            </span>
+                <span class="summary-wrapper">
+                    <span class="author-link-line">
+                        <a class="author-link" href="/people/<%= activity.authorObjId %>"><%= activity.authorName %></a>
+                    </span>
+                    <span title="Materials Science, PhD" class="bio">专业造轮子，拉黑抢前排。</span>
+                </span>
             </div>
         </div>
         <div class="zm-item-rich-text expandable">
-            <div style="display: none;">工程师文化的意思就是说，码农门锁在一个房间里，互相不用照顾别人的感受，好好写代码，闷声大发财的意思。这当然是每个码农都向往的。不具有这样的文化的公司，会倾向于招不到牛逼的人，或者手上有牛逼的人也不在乎当老鼠一样玩。</div>
+            <div style="display: none;"><%= activity.answer %></div>
             <div class="zh-summary summary clearFix" style="display: block;">
-                工程师文化的意思就是说，码农门锁在一个房间里，互相不用照顾别人的感受，好好写代码，闷声大发财的意思。这当然是每个码农都向往的。不具有这样的文化的公司，会倾向于招不到牛逼的人，或者手上有牛逼的人也不在乎当老鼠一样玩。
+                <%= activity.answer %>
                 <a href="javascript:;" class="toggle-expand">显示全部</a>
             </div>
             <p class="expanded-visible">
-                <a class="answer-date-link meta-item" href="/question/22049706/answer">编辑于 2014-12-24</a>
+                <a class="answer-date-link meta-item" href="/question/22049706/answer">编辑于 <%= activity.answerDate %></a>
             </p>
         </div>
         <div class="feed-meta zm-item-meta clearFix">
             <div class="zm-meta-panel">
                 <a href="javascript" class="follow-link zg-follow meta-item"><i class="z-icon-follow"></i>关注问题</a>
-                <a href="javascript:;" class="toggle-comment meta-item" num="133"><i class="z-icon-comment"></i>133条评论</a>
+                <a href="javascript:;" class="toggle-comment meta-item" num="133"><i class="z-icon-comment"></i>添加评论</a>
                 <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
                 <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
                 <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>

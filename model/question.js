@@ -19,7 +19,7 @@ module.exports = {
         }).exec()
     },
     getOneAnswer: function getOneAnswer(answer_id){
-        return Answer.findById(answer_id).exec();
+        return Answer.findById(answer_id).populate('userObjId questionId').exec();
     },
     getOneQuestion: function getOneQuestion(question_id){
         return Question.findById(question_id).exec();

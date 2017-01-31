@@ -147,15 +147,13 @@ router.post('/:question_id/:action', function(req, res, next) {
         return res.redirect('/');
     }
     if(req.params.action == 'follow'){
-        console.log('enter follow')
         questionModel.followQuestion(req.params.question_id, req.session.user._id).then(function(question){
-            if(question){
-                return res.status(200).json({"success": "success"});
-            }
-            else{
-                return res.status(200).json({"error": "try again."});
-            }
-        })
+            return activityModel.activityFollowQ(req.session.user._id, question._id);
+        }).then(function(activity){
+            return peopleModel.addOneActivityRecord(req.session.user._id, activity._id);
+        }).then(function(result){
+            return res.status(200).json({"success": "success"});
+        }).catch(next);
     }
     else if(req.params.action == 'unfollow'){
         questionModel.unfollowQuestion(req.params.question_id, req.session.user._id).then(function(question){
@@ -189,9 +187,12 @@ router.post('/:question_id/:action', function(req, res, next) {
             answer = result[1];
             return Promise.all([
                 questionModel.addOneAnswerRecord(req.params.question_id, answer._id),
-                peopleModel.addOneAnswerRecord(req.session.user._id, answer._id)
+                peopleModel.addOneAnswerRecord(req.session.user._id, answer._id),
+                activityModel.activityAddA(req.session.user._id, answer._id, answer.date)
             ])
         }).then(function(result) {
+            return peopleModel.addOneActivityRecord(req.session.user._id, result[2]._id)
+        }).then(function(result){
             ejs.renderFile('views/components/oneanswer.ejs', {
                 answerUrl: '/question/' + req.params.question_id + '/answer/' + answer._id,
                 content: answer.answer,
@@ -310,6 +311,7 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
         return;
     }
 
+
     var found = false;
     questionModel.answerActions(req.params.answer_id).then(function(answer){
         for(var loop = 0; loop < answer.lstActions.length; loop++) {
@@ -322,6 +324,16 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
                     questionModel.updateActions(answer.lstActions[loop]._id, update),
                     questionModel.updateAnswerAgreeNum(answer._id, num)
                 ]).then(function(result){
+                    // 保存赞同时的动态
+                    if(req.params.action == 'agree'){
+                        return activityModel.activityAgreeA(req.session.user._id, req.params.answer_id);
+                    }
+                    else{
+                        return res.status(200).json({"agreed": "success"});
+                    }
+                }).then(function(result){
+                    return peopleModel.addOneActivityRecord(req.session.user._id, result._id);
+                }).then(function(result){
                     return res.status(200).json({"agreed": "success"});
                 })
 
@@ -342,7 +354,16 @@ router.post('/:question_id/answer/:answer_id/:action', function(req, res, next){
                     questionModel.updateAnswerAgreeNum(answer._id, num)
                 ])
             }).then(function(result){
-                return res.status(200).json({"agreed": true});
+                if(req.params.action == 'agree'){
+                    return activityModel.activityAgreeA(req.session.user._id, req.params.answer_id);
+                }
+                else{
+                    return res.status(200).json({"agreed": "success"});
+                }
+            }).then(function(result){
+                return peopleModel.addOneActivityRecord(req.session.user._id, result._id);
+            }).then(function(result){
+                return res.status(200).json({"agreed": "success"});
             })
         }
     })

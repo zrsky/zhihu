@@ -7,21 +7,22 @@ var path = require('path');
 var userModel = require('../model/people');
 var questionModel = require('../model/question');
 var validatemobile = require('../lib/commFunc').validatemobile;
+var dateFormat = require('../lib/commFunc').dateFormat;
 
 // 个人页面
 router.get('/:user_id', function(req, res, next) {
     if(!req.session.user){
         return res.redirect('/');
     }
-
+    var latestQuestions = [];
+    var latestAnswers = [];
+    var latestActivities = [];
+    var user = [];
     Promise.all([
         userModel.getUserPage(req.params.user_id),
         userModel.increaseView(req.params.user_id)
     ]).then(function(result){
-        var latestQuestions = [];
-        var latestAnswers = [];
-        var latestActivities = [];
-        var user = result[0];
+        user = result[0];
         for(var loop = 0; loop < user.lstQuestion.length; loop++){
             latestQuestions.push({
                 title: user.lstQuestion[loop].title,
@@ -39,9 +40,40 @@ router.get('/:user_id', function(req, res, next) {
                 answer: user.lstAnswer[loop].answer
             })
         }
-        return Promise.all(
-            userModel.getUserPage(req.params.user_id)
-        )
+
+        return Promise.all(user.lstActivity.map(function(activity){
+            var info = {
+                userObjId: activity.userObjId._id,
+                userName: activity.userObjId.name,
+                activityType: activity.activityType,
+                date: dateFormat(activity.date)
+            }
+            latestActivities.push(info);
+
+            if(activity.activityType == 'addQuestion' || activity.activityType == 'followQuestion'){
+                return questionModel.getOneQuestion(activity.documentId);
+            }
+            else if(activity.activityType == 'addAnswer' || activity.activityType == 'agreeAnswer'){
+                return questionModel.getOneAnswer(activity.documentId);
+            }
+        }))
+    }).then(function(result){
+        for(var loop = 0; loop < latestActivities.length; loop++){
+            if(latestActivities[loop].activityType == 'addQuestion' || latestActivities[loop].activityType == 'followQuestion'){
+                // 问题相关，则附加一个问题
+                latestActivities[loop].questionTitle = result[loop].title;
+                latestActivities[loop].questionUrl = '/question/' + result[loop]._id;
+            }
+            else if(latestActivities[loop].activityType == 'addAnswer' || latestActivities[loop].activityType == 'agreeAnswer'){
+                latestActivities[loop].authorObjId = result[loop].userObjId._id;
+                latestActivities[loop].authorName = result[loop].userObjId.name;
+                latestActivities[loop].answer = result[loop].answer;
+                latestActivities[loop].answerDate = dateFormat(result[loop].date);
+                latestActivities[loop].agreeNum = result[loop].agreeNum;
+                latestActivities[loop].question = result[loop].questionId.title;
+                latestActivities[loop].questionId = result[loop].questionId._id;
+            }
+        }
         res.render('people', {
             isMyself: req.session.user._id == req.params.user_id,
             myself:{
@@ -58,8 +90,6 @@ router.get('/:user_id', function(req, res, next) {
             answerNum: user.lstAnswer.length,
             viewNum: user.viewNum
         });
-    }).then(function(result){
-        console.log('enter here!')
     }).catch(next);
 });
 
