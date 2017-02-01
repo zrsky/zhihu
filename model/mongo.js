@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 * lstQuestion       所有的提问 "_id"列表
 * lstAnswers        所有的回答 "_id"列表
 * lstFollower       关注者"_id"列表
+* lstFollowing      关注"_id"列表
 * lstActivity       动态列表
 * viewNum           被浏览次数
 * */
@@ -22,7 +23,8 @@ var userSchema = mongoose.Schema({
     password: String,
     lstQuestion: [{type: mongoose.Schema.Types.ObjectId, ref: 'Question'}],
     lstAnswer: [{type: mongoose.Schema.Types.ObjectId, ref: 'Answer'}],
-    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],     // todo:未实现
+    lstFollower: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    lstFollowing: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     lstActivity: [{type: mongoose.Schema.Types.ObjectId, ref: 'UserActivity'}],
     viewNum: {type: Number, default: 0}
 });

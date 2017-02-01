@@ -8,6 +8,7 @@
  questionNum        总提问数
  latestAnswers      最近的回答
  answerNum          总回答数
+ followed           是否关注了该用户
  */%>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -17,11 +18,11 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 </head>
 <body class="zhi">
-    <%- include('components/zu-top.ejs', {myself: myself}) %>
+    <%- include('components/zu-top', {myself: myself}) %>
     <div class="zg-wrap zu-main clearFix" role="main">
         <div class="zu-main-content">
             <div class="zu-main-content-inner">
-                <div class="zm-profile-header ProfileCard">
+                <div class="zm-profile-header ProfileCard" Id=<%= id %>>
                     <div class="zm-profile-header-main">
 <% if(isMyself){ %>
                         <div class="UserAvatarEditor ProfileHeader-avatar">
@@ -81,10 +82,11 @@
                         </div>
 <% if(!isMyself){ %>
                         <div class="zm-profile-header-op-btn">
+    <% if(followed){ %>
                             <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn">取消关注</button>
-                            <a href="/inbox/1001" class="zg-btn-white zm-profile-header-pm-btn" id="zm-profile-header-pm-btn">
-                                <i class="zg-icon">私信</i>
-                            </a>
+    <% }else{ %>
+                            <button class="zg-btn zg-btn-blue zm-rich-follow-btn">关注</button>
+    <% } %>
                         </div>
 <% } %>
                     </div>

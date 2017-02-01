@@ -18,6 +18,7 @@ router.get('/:user_id', function(req, res, next) {
     var latestAnswers = [];
     var latestActivities = [];
     var user = [];
+    var followed = false;
     Promise.all([
         userModel.getUserPage(req.params.user_id),
         userModel.increaseView(req.params.user_id)
@@ -39,6 +40,9 @@ router.get('/:user_id', function(req, res, next) {
                 url: '/question/' + user.lstAnswer[loop].questionId._id,
                 answer: user.lstAnswer[loop].answer
             })
+        }
+        if(user.lstFollower.indexOf(req.session.user._id) != -1){
+            followed = true;
         }
 
         return Promise.all(user.lstActivity.map(function(activity){
@@ -82,6 +86,8 @@ router.get('/:user_id', function(req, res, next) {
                 _id: req.session.user._id
             },
             name: user.name,
+            id: req.params.user_id,
+            followed: followed,
             profileUrl: user.profileUrl || '/images/system/profile_l.jpg',
             latestQuestions: latestQuestions,
             latestAnswers: latestAnswers,
@@ -136,6 +142,37 @@ router.post('/upload', function(req, res, next){
     })
 
     form.parse(req);
+})
+
+// 关注用户
+router.post('/:user_id/follow', function(req, res, next){
+    if(req.params.user_id == req.session.user._id){
+        return res.status(200).json({"error": "cannot follow self"});
+    }
+
+    Promise.all([
+        userModel.addOneFollower(req.params.user_id, req.session.user._id),
+        userModel.addOneFollowing(req.session.user._id, req.params.user_id)
+    ]).then(function(result){
+        return res.status(200).json({"success": "success"});
+    }).catch(function(err){
+        return res.status(200).json({"error": "error"});
+    })
+})
+// 取消关注用户
+router.post('/:user_id/unfollow', function(req, res, next){
+    if(req.params.user_id == req.session.user._id){
+        return res.status(200).json({"error": "cannot follow self"});
+    }
+
+    Promise.all([
+        userModel.removeOneFollower(req.params.user_id, req.session.user._id),
+        userModel.removeOneFollowing(req.session.user._id, req.params.user_id)
+    ]).then(function(result){
+        return res.status(200).json({"success": "success"});
+    }).catch(function(err){
+        return res.status(200).json({"error": "error"});
+    })
 })
 
 // 用户注册

@@ -540,6 +540,47 @@ $('#mock').blur(function () {
     $(this).parent().removeClass('zm-editable-editor-field-active');
 })
 
+// 关注人物
+$('.zm-rich-follow-btn').click(function(){
+    var followId = $(this).parents('.zm-profile-header').prop('id');
+    var $this = $(this);
+    var className = $this.prop('class');
+    var text = $this.text();
+    var follow, url;
+    if(text == '关注'){
+        follow = true;
+        url = '/people/' + followId + '/follow/';
+    }
+    else if(text == '取消关注'){
+        follow = false;
+        url = '/people/' + followId + '/unfollow/';
+    }
+    else{
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        url: url,
+        dataType: 'JSON',
+        success: function(data){
+            if(data.error){
+                console.log("error:" + data.error);
+            }
+            else{
+                if(follow){
+                    $this.removeClass('zg-btn-blue').addClass('zg-btn-unfollow').text('取消关注');
+                }
+                else{
+                    $this.removeClass('zg-btn-unfollow').addClass('zg-btn-blue').text('关注');
+                }
+            }
+        },
+        error: function(data){
+            console.log('error');
+        }
+    })
+})
+
 // hover出现修改头像
 $('.UserAvatarEditor').mouseover(function(){
     $(this).children('.UserAvatarEditor-mask').removeClass('Mask-hidden');

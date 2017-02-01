@@ -38,6 +38,20 @@ module.exports = {
     updateProfileUrl: function updateProfileUrl(user_id, url){
         return User.findByIdAndUpdate(user_id, {$set: {profileUrl: url}}).exec();
     },
+    /* follow start */
+    addOneFollower: function addOneFollower(user_id, follower_id){
+        return User.findByIdAndUpdate(user_id, {$push: {lstFollower: follower_id}}).exec();
+    },
+    removeOneFollower: function removeOneFollower(user_id, follower_id){
+        return User.findByIdAndUpdate(user_id, {$pull: {lstFollower: follower_id}}).exec();
+    },
+    addOneFollowing: function addOneFollowing(user_id, following_id){
+        return User.findByIdAndUpdate(user_id, {$push: {lstFollowing: following_id}}).exec();
+    },
+    removeOneFollowing: function removeOneFollowing(user_id, following_id){
+        return User.findByIdAndUpdate(user_id, {$pull: {lstFollowing: following_id}}).exec();
+    },
+    /* follow end */
     /* question start */
     addOneQuestionRecord: function addOneQuestionRecord(user_id, question_id){
         return User.findByIdAndUpdate(user_id, {$push: {lstQuestion: question_id}}).exec();
