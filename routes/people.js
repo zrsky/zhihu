@@ -94,7 +94,9 @@ router.get('/:user_id', function(req, res, next) {
             latestActivities: latestActivities,
             questionNum: user.lstQuestion.length,
             answerNum: user.lstAnswer.length,
-            viewNum: user.viewNum
+            viewNum: user.viewNum,
+            followerNum: user.lstFollower.length,
+            followingNum: user.lstFollowing.length
         });
     }).catch(next);
 });

@@ -27,6 +27,14 @@ module.exports = {
             }
         }).exec();
     },
+    getFollowingActivities: function getFollowingActivities(user_id){
+        return User.findById(user_id).populate({
+            path: 'lstFollowing',
+            options:{
+                populate: {path: 'lstActivity'}
+            }
+        }).exec();
+    },
     increaseView: function increaseView(user_id){
         return User
             .findByIdAndUpdate(user_id, {$inc: {viewNum: 1}})
