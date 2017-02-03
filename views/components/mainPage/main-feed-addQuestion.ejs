@@ -1,0 +1,31 @@
+<div class="feed-item" id=<%= feed.activityId %>>
+    <div class="avatar">
+        <a href="/people/<%= feed.userObjId %>" class="zm-item-link-avatar">
+            <img src=<%= feed.profileUrl %> class="zm-item-avatar-img">
+        </a>
+    </div>
+    <div class="feed-main">
+        <div class="feed-source">
+            <a href="/people/<%= feed.userObjId %>"><%= feed.userName %></a>
+            添加了问题
+            <span class="time"><%= feed.date %></span>
+        </div>
+        <div class="feed-content">
+            <h2>
+                <a href=<%= feed.questionUrl %> class="question-link"><%= feed.questionTitle %></a>
+            </h2>
+            <div class="feed-meta">
+                <div class="zm-item-meta clearFix">
+                    <div class="zm-meta-panel">
+                        <a href="javascript" class="follow-link zg-follow meta-item"><i class="z-icon-follow"></i>关注问题</a>
+                        <a href="javascript:;" class="toggle-comment meta-item" num=0><i class="z-icon-comment"></i>添加评论</a>
+                        <span class="zg-bull">•</span>
+                        <a href="javascript:;" class="meta-item"><%= feed.answerNum %> 个回答</a>
+                    </div>
+                </div>
+                <a style="cursor: pointer;" class="ignore"></a>
+            </div>
+        </div>
+    </div>
+    <div class="feed-item-options hidden"></div>
+</div>

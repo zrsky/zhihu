@@ -20,6 +20,17 @@
                 </div>
                 <div class="zu-main-feed-con">
                     <div id="js-home-feed-list" class="zh-general-list clearFix">
+<% feeds.forEach(function(feed){ %>
+    <% if(feed.activityType == 'followQuestion'){ %>
+                        <%- include('components/mainPage/main-feed-followQuestion', {feed: feed})%>
+    <% } else if(feed.activityType == 'addQuestion'){ %>
+                        <%- include('components/mainPage/main-feed-addQuestion', {feed: feed})%>
+    <% } else if(feed.activityType == 'agreeAnswer'){ %>
+                        <%- include('components/mainPage/main-feed-agreeAnswer', {feed: feed})%>
+    <% } else if(feed.activityType == 'addAnswer'){ %>
+                        <%- include('components/mainPage/main-feed-addAnswer', {feed: feed})%>
+    <% } %>
+<% }) %>
                     </div>
                 </div>
             </div>

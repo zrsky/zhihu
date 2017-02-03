@@ -1,0 +1,70 @@
+<div class="feed-item" id=<%= feed.activityId %>>
+    <div class="avatar">
+        <a href="/people/<%= feed.userObjId %>" class="zm-item-link-avatar">
+            <img src=<%= feed.profileUrl %> class="zm-item-avatar-img">
+        </a>
+    </div>
+    <div class="feed-main">
+        <div class="feed-source">
+            <a href="/people/<%= feed.userObjId %>"><%= feed.userName %></a>
+            赞同了回答
+            <span class="time"><%= feed.date %></span>
+        </div>
+        <div class="feed-content">
+            <h2>
+                <a href="/question/<%= feed.questionId %>" class="question-link"><%= feed.question %></a>
+            </h2>
+            <div class="entry-body">
+                <div class="zm-item-vote">
+                    <a class="zm-item-vote-count"><%= feed.agreeNum %></a>
+                </div>
+                <div class="zm-votebar">
+                    <button class="up" title="赞同">
+                        <i class="icon vote-arrow"></i>
+                        <span class="count"><%= feed.agreeNum %></span>
+                    </button>
+                    <button class="down" title="反对，不会显示您的姓名">
+                        <i class="icon vote-arrow"></i>
+                    </button>
+                </div>
+                <div class="zm-item-answer-author-info">
+                    <span class="summary-wrapper">
+                        <span class="author-link-line">
+                            <a class="author-link" href="/people/<%= feed.authorObjId %>"><%= feed.authorName %></a>
+                        </span>
+                    </span>
+                </div>
+                <div class="zm-item-rich-text expandable">
+                    <div style="display: none;"><%= feed.answer %></div>
+                    <div class="zh-summary summary clearFix" style="display: block;">
+                        <%= feed.answer%>
+                        <a href="javascript:;" class="toggle-expand">显示全部</a>
+                    </div>
+                    <p class="expanded-visible">
+                        <a class="answer-date-link meta-item" href="/question/22049706/answer">编辑于 <%= feed.answerDate%></a>
+                    </p>
+                </div>
+            </div>
+            <div class="feed-meta">
+                <div class="zm-item-meta clearFix">
+                    <div class="zm-meta-panel">
+                        <a href="javascript" class="follow-link zg-follow meta-item"><i class="z-icon-follow"></i>关注问题</a>
+                        <a href="javascript:;" class="toggle-comment meta-item" num="0"><i class="z-icon-comment"></i> 添加评论</a>
+                        <a href="#" class="js-thank zu-autoHide meta-item"><i class="z-icon-thank"></i>感谢</a>
+                        <a href="#" class="js-share zu-autoHide meta-item"><i class="z-icon-share"></i>分享</a>
+                        <a href="#" class="js-collect zu-autoHide meta-item"><i class="z-icon-collect"></i>收藏</a>
+                        <span class="zg-bull zu-autoHide">•</span>
+                        <a href="#" class="js-noHelp zu-autoHide meta-item">没有帮助</a>
+                        <span class="zg-bull zu-autoHide">•</span>
+                        <a href="#" class="js-report zu-autoHide meta-item">举报</a>
+                        <span class="zg-bull">•</span>
+                        <a href="#" class="js-report meta-item">作者保留权利</a>
+                        <button class="item-collapse meta-item"><i class="z-icon-fold"></i>收起</button>
+                    </div>
+                </div>
+                <a style="cursor: pointer;" class="ignore"></a>
+            </div>
+        </div>
+    </div>
+    <div class="feed-item-options hidden"></div>
+</div>

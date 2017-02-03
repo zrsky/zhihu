@@ -31,7 +31,12 @@ module.exports = {
         return User.findById(user_id).populate({
             path: 'lstFollowing',
             options:{
-                populate: {path: 'lstActivity'}
+                populate: {
+                    path: 'lstActivity',
+                    options: {
+                        populate: {path: 'userObjId'}
+                    }
+                }
             }
         }).exec();
     },
