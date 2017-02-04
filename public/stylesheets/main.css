@@ -153,6 +153,7 @@ input, button{
     background-image: url("/images/system/sprites-main.png");
     background-repeat: no-repeat;
     display: inline-block;
+    vertical-align: middle;
 }
 .sprite-icon-magnifier-dark{
     background-position: -82px 0;

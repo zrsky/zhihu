@@ -1,11 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../model/mongo').User;
 var peopleModel = require('../model/people');
 var questionModel = require('../model/question');
 var sha1 = require('sha1');
 var fs = require('fs');
-var validatemobile = require('../lib/commFunc').validatemobile;
 var dateFormat = require('../lib/commFunc').dateFormat;
 
 /* GET home page. */
@@ -69,7 +67,7 @@ router.get('/', function(req, res, next) {
                 feeds[loop].questionId = result[loop].questionId._id;
             }
         }
-        console.log(feeds);
+
         res.render('main', {
             myself:{
                 name: req.session.user.name,
